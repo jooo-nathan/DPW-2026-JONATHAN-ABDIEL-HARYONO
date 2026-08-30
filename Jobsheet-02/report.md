@@ -75,9 +75,11 @@ Warna tidak sesuai, karena pewarnaan button pada `sytle.css` membedakan berdasar
 
 ![Latihan3.3](img/Latihan3.3.png)
 
+![Latihan3.4](img/Latihan3.4.png)
+
 - Hasil setelah diperbaiki (final) :
 
-![Latihan3.4](img/Latihan3.4.png)
+![Latihan3.5](img/Latihan3.5.png)
 
 ### 4. UJI RESPONSIVITAS SEDERHANA
 
