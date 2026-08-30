@@ -85,7 +85,7 @@ Warna tidak sesuai, karena pewarnaan button pada `sytle.css` membedakan berdasar
 
 - Tampilan awal (desktop) :
 
-![Latihan4.1](img/Latihan4.1.1.png)
+![Latihan4.1.1](img/Latihan4.1.1.png)
 
 - Tampilan yang lebih sempit (menyerupai lebar layar HP) :
 
