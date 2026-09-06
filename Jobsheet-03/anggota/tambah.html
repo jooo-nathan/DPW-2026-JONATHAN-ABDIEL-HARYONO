@@ -27,6 +27,10 @@
             <h2>Tambah Anggota</h2>
             <form>
                 <p>
+                    <label for="email">E-mail</label><br>
+                    <input type="email" id="email" name="email" required>
+                </p>
+                <p>
                     <label for="nama">Nama</label><br>
                     <input type="text" id="nama" name="nama" required>
                 </p>
@@ -41,6 +45,25 @@
                 <p>
                     <label for="no_hp">No. HP</label><br>
                     <input type="text" id="no_hp" name="no_hp">
+                </p>
+                <p>
+                    <label for="jenis_kelamin">Jenis Kelamin</label><br>
+                    <select id="jenis_kelamin" name="jenis_kelamin">
+                        <option value="laki_laki">Laki-laki</option>
+                        <option value="perempuan">Perempuan</option>
+                    </select>
+                </p>
+                <p>
+                    <label for="jabatan">Jabatan</label><br>
+                    <select id="jabatan" name="jabatan">
+                        <option value="kepala_perpustakaan">Kepala Perpustakaan</option>
+                        <option value="asisten_perpustakaan">Asisten Perpustakaan</option>
+                        <option value="pustakawan_ahli_pertama">Pustakawan Ahli Pertama</option>
+                        <option value="pustakawan_ahli_muda">Pustakawan Ahli Muda</option>
+                        <option value="pustakawan_ahli_madya">Pustakawan Ahli Madya</option>
+                        <option value="pustakawan_ahli_utama">Pustakawan Ahli Utama</option>
+                        <option value="anggota_perpustakaan">Anggota Perpustakaan</option>
+                    </select>
                 </p>
                 <p>
                     <button type="submit">Simpan</button>
