@@ -21,11 +21,7 @@ a:hover {
     text-decoration: underline;
 }
 
-/* ==========================================
-   1. STYLE BASE (UNTUK MOBILE / LAYAR KECIL)
-   ========================================== */
-
-/* Header & Hamburger */
+/* ===== Header & Navbar (Flexbox) ===== */
 header {
     background-color: #4B0082;
     color: #fff;
@@ -34,42 +30,16 @@ header {
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    position: relative;
 }
 
 header h1 {
     font-size: 1.4rem;
 }
 
-.nav-toggle {
-    display: none;
-}
-
-/* Di HP, tombol hamburger dimunculkan */
-.nav-toggle-label {
-    display: block;
-    font-size: 1.6rem;
-    color: #fff;
-    cursor: pointer;
-}
-
-/* Di HP, nav tersembunyi secara default */
-header nav {
-    display: none;
-    width: 100%;
-    order: 3;
-    margin-top: 1rem;
-}
-
-.nav-toggle:checked ~ nav {
-    display: block;
-}
-
 header nav ul {
     list-style: none;
     display: flex;
-    flex-direction: column; /* Menurun ke bawah di HP */
-    gap: 0.75rem;
+    gap: 1.25rem;
 }
 
 header nav a {
@@ -77,9 +47,9 @@ header nav a {
     font-weight: 500;
 }
 
-/* Main Layout */
+/* ===== Main Layout ===== */
 main {
-    max-width: 1600px;
+    max-width: 1600px; /* Mengubah max-width menjadi 1600px */
     margin: 2rem auto;
     padding: 0 1.5rem;
 }
@@ -97,10 +67,10 @@ section h2 {
     color: #4B0082;
 }
 
-/* Kartu Statistik di HP (1 Kolom) */
+/* ===== Kartu Statistik (CSS Grid) ===== */
 main section:nth-of-type(2) {
     display: grid;
-    grid-template-columns: 1fr; 
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
 }
 
@@ -123,7 +93,7 @@ main section:nth-of-type(2) article p {
     color: #4B0082;
 }
 
-/* Tabel */
+/* ===== Tabel ===== */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -167,7 +137,7 @@ td button:last-of-type {
     color: #fff;
 }
 
-/* Form di HP */
+/* ===== Form ===== */
 form p {
     margin-bottom: 1rem;
 }
@@ -182,7 +152,7 @@ form label {
 form input,
 form select {
     width: 100%;
-    max-width: 100%; /* Memenuhi layar HP */
+    max-width: 400px;
     padding: 0.55rem 0.7rem;
     border: 1px solid #cdd4da;
     border-radius: 4px;
@@ -203,7 +173,7 @@ form button[type="submit"]:hover {
     background-color: #164869;
 }
 
-/* Footer & Element Overflow */
+/* ===== Footer ===== */
 footer {
     text-align: center;
     padding: 1.25rem;
@@ -211,52 +181,64 @@ footer {
     font-size: 0.9rem;
 }
 
-.table-responsive,
-pre {
+/* ===== Tabel Responsif ===== */
+.table-responsive {
     overflow-x: auto;
-    max-width: 100%;
 }
 
-/* ==========================================
-   2. MEDIA QUERIES (MOBILE-FIRST)
-   ========================================== */
+/* ===== Hamburger Menu (checkbox hack) ===== */
+.nav-toggle {
+    display: none;
+}
 
-/* Tablet (Lebar Layar Minimal 481px) */
-@media (min-width: 481px) {
-    /* Kartu statistik membesar jadi 2 kolom */
+.nav-toggle-label {
+    display: none;
+    font-size: 1.6rem;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* ===== Responsive Breakpoints ===== */
+
+/* Tablet ke bawah */
+@media (max-width: 900px) { /* Mengubah breakpoint tablet */
     main section:nth-of-type(2) {
         grid-template-columns: repeat(2, 1fr);
     }
-
-    /* Batasi lebar input form agar tidak terlalu panjang */
-    form input,
-    form select {
-        max-width: 400px;
-    }
 }
 
-/* Laptop / Desktop (Lebar Layar Minimal 901px) */
-@media (min-width: 901px) {
-    /* Sembunyikan ikon hamburger */
-    .nav-toggle-label {
-        display: none;
+/* Mobile */
+@media (max-width: 480px) {
+    header {
+        position: relative;
     }
 
-    /* Tampilkan navbar secara horizontal penuh */
-    header nav {
+    .nav-toggle-label {
         display: block;
-        width: auto;
-        order: initial;
-        margin-top: 0;
+    }
+
+    header nav {
+        display: none;
+        width: 100%;
+        order: 3;
+        margin-top: 1rem;
+    }
+
+    .nav-toggle:checked ~ nav {
+        display: block;
     }
 
     header nav ul {
-        flex-direction: row;
-        gap: 1.25rem;
+        flex-direction: column;
+        gap: 0.75rem;
     }
 
-    /* Kartu statistik jadi 3 kolom */
     main section:nth-of-type(2) {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: 1fr;
+    }
+
+    form input,
+    form select {
+        max-width: 100%;
     }
 }
