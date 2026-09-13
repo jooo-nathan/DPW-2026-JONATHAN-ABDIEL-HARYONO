@@ -15,6 +15,7 @@ function initNavToggle() {
 // tombol .btn-hapus belum tentu ada saat DOMContentLoaded.
 function initHapusConfirm() {
     document.addEventListener("click", function (e) {
+        console.log(e.target); // coba klik berbagai tempat di halaman, amati di Console
         const btn = e.target.closest(".btn-hapus");
         if (!btn) return;
 
