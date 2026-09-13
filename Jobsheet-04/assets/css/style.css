@@ -260,3 +260,27 @@ pre {
         grid-template-columns: repeat(3, 1fr);
     }
 }
+
+/* MODIFIKASI */
+.login-section {
+    width: 40%;
+    min-height: 450px;
+    min-width: 320px;
+    margin: 180px auto 0;
+    margin-top: 180px;
+    h2 {
+        text-align: center;
+        font-size: 2.2rem;
+    }
+    form {
+        padding-left: 10%;
+
+        h4 button {
+            margin-left: 180px;
+        }
+    }
+}
+
+section form h4 label {
+    color: #4B0082;
+}
