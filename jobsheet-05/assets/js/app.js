@@ -79,6 +79,41 @@ function hapusError(input) {
     }
 }
 
+// ===== Daftar aturan validasi =====
+// Tiap aturan: selector field, fungsi cek (true = valid), dan pesan error kalau tidak valid
+const daftarAturanValidasi = [
+    {
+        selector: "[name='judul'], [name='nama']",
+        cek: function (nilai) {
+            return nilai.trim() !== "";
+        },
+        pesan: "Field ini wajib diisi."
+    },
+    {
+        selector: "[name='pengarang']",
+        cek: function (nilai) {
+            return nilai.trim() !== "";
+        },
+        pesan: "Pengarang wajib diisi."
+    },
+    {
+        selector: "[name='tahun']",
+        cek: function (nilai) {
+            const angka = parseInt(nilai, 10);
+            return !isNaN(angka) && angka >= 1900 && angka <= 2026;
+        },
+        pesan: "Tahun harus di antara 1900-2026."
+    },
+    {
+        selector: "[name='stok']",
+        cek: function (nilai) {
+            const angka = parseInt(nilai, 10);
+            return !isNaN(angka) && angka >= 0;
+        },
+        pesan: "Stok tidak boleh negatif."
+    }
+];
+
 function initValidasiForm() {
     const form = document.getElementById("form-tambah");
     if (!form) return;
@@ -86,43 +121,17 @@ function initValidasiForm() {
     form.addEventListener("submit", function (e) {
         let valid = true;
 
-        const judul = form.querySelector("[name='judul'], [name='nama']");
-        if (judul && judul.value.trim() === "") {
-            tampilkanError(judul, "Field ini wajib diisi.");
-            valid = false;
-        } else if (judul) {
-            hapusError(judul);
-        }
+        daftarAturanValidasi.forEach(function (aturan) {
+            const input = form.querySelector(aturan.selector);
+            if (!input) return; // field ini tidak ada di form (misal, form anggota tidak punya "stok")
 
-        const pengarang = form.querySelector("[name='pengarang']");
-        if (pengarang && pengarang.value.trim() === "") {
-            tampilkanError(pengarang, "Pengarang wajib diisi.");
-            valid = false;
-        } else if (pengarang) {
-            hapusError(pengarang);
-        }
-
-        const tahun = form.querySelector("[name='tahun']");
-        if (tahun) {
-            const nilai = parseInt(tahun.value, 10);
-            if (isNaN(nilai) || nilai < 1900 || nilai > 2026) {
-                tampilkanError(tahun, "Tahun harus di antara 1900-2026.");
-                valid = false;
+            if (aturan.cek(input.value)) {
+                hapusError(input);
             } else {
-                hapusError(tahun);
-            }
-        }
-
-        const stok = form.querySelector("[name='stok']");
-        if (stok) {
-            const nilai = parseInt(stok.value, 10);
-            if (isNaN(nilai) || nilai < 0) {
-                tampilkanError(stok, "Stok tidak boleh negatif.");
+                tampilkanError(input, aturan.pesan);
                 valid = false;
-            } else {
-                hapusError(stok);
             }
-        }
+        });
 
         if (!valid) {
             e.preventDefault();
