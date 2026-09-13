@@ -273,6 +273,7 @@ pre {
         font-size: 2.2rem;
     }
     form {
+
         padding-left: 10%;
 
         h4 button {
@@ -281,6 +282,18 @@ pre {
     }
 }
 
+.register-ask {
+    text-align: center;
+}
+
+
 section form h4 label {
     color: #4B0082;
+}
+
+.not-yet {
+    text-align: center;
+    margin-top: 200px;
+    color: #4B0082;
+    min-height: 300px;
 }
