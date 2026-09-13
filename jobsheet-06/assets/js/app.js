@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // ===== Fungsi generik: ambil & tampilkan data dari file JSON mana pun =====
-// namaFileJson: nama file di folder data/, misal, "buku.json"
+// namaFileJson: nama file di folder data/, mis. "buku.json"
 // daftarKunci: urutan properti yang mau ditampilkan sebagai kolom
 async function muatDaftarData(namaFileJson, daftarKunci) {
     const tbody = document.querySelector(".table-responsive table tbody");
@@ -130,7 +130,7 @@ async function muatDaftarData(namaFileJson, daftarKunci) {
     tbody.innerHTML = "";
 
     try {
-        await new Promise((resolve) => setTimeout(resolve, 600));
+        await new Promise((resolve) => setTimeout(resolve, 3000));
 
         const res = await fetch("../data/" + namaFileJson);
         if (!res.ok) {
