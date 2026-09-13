@@ -9,6 +9,25 @@ function initNavToggle() {
     });
 }
 
+// ===== Counter "Menampilkan X dari Y ..." =====
+function updateCounter() {
+    const table = document.querySelector(".table-responsive table");
+    const counterEl = document.getElementById("filter-counter");
+    if (!table || !counterEl) return;
+
+    const rows = table.querySelectorAll("tbody tr");
+    const total = rows.length;
+    let tampil = 0;
+    rows.forEach(function (row) {
+        if (row.style.display !== "none") {
+            tampil++;
+        }
+    });
+
+    const label = counterEl.dataset.label || "data";
+    counterEl.textContent = "Menampilkan " + tampil + " dari " + total + " " + label;
+}
+
 // ===== Konfirmasi hapus (front-end only, belum ke server) =====
 function initHapusConfirm() {
     document.querySelectorAll(".btn-hapus").forEach(function (btn) {
@@ -18,6 +37,7 @@ function initHapusConfirm() {
             const yakin = confirm("Yakin ingin menghapus \"" + nama + "\"?");
             if (yakin && row) {
                 row.remove();
+                updateCounter();
             }
         });
     });
@@ -33,10 +53,14 @@ function initTableFilter() {
         const keyword = input.value.toLowerCase();
         const rows = table.querySelectorAll("tbody tr");
         rows.forEach(function (row) {
-            const teks = row.querySelector("td").textContent.toLowerCase(); // ubah menjadi cari judul saja
-            row.style.display = teks.includes(keyword) ? "" : "none";
+            const judulSel = row.querySelector("td");
+            const teksJudul = judulSel ? judulSel.textContent.toLowerCase() : "";
+            row.style.display = teksJudul.includes(keyword) ? "" : "none";
         });
+        updateCounter();
     });
+
+    updateCounter(); // tampilkan hitungan awal saat halaman pertama dimuat
 }
 
 // ===== Validasi form (client-side) =====
@@ -60,7 +84,6 @@ function initValidasiForm() {
     if (!form) return;
 
     form.addEventListener("submit", function (e) {
-        e.preventDefault(); //mencegah submit dengan nilai default lebih dahulu
         let valid = true;
 
         const judul = form.querySelector("[name='judul'], [name='nama']");
@@ -98,30 +121,6 @@ function initValidasiForm() {
                 valid = false;
             } else {
                 hapusError(stok);
-            }
-        }
-
-        function validateNumAndDash(text) {
-            for (let i = 0; i < text.length; i++) {
-                const character = text[i];
-                const isNum = character >= "0" && character <= "9";
-                const isDash = character === "-";
-                if (!isNum && !isDash) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        const isbn = form.querySelector("[name='isbn'");
-        if (isbn) {
-            const nilaiISBN = isbn.value.trim();
-            if (nilaiISBN !== "" && !validateNumAndDash(nilaiISBN)) {
-                tampilkanError(isbn, "ISBN hanya boleh berisi angka dan tanda strip (-).");
-                valid = false;
-            }
-            else {
-                hapusError(isbn);
             }
         }
 
