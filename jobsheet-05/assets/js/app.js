@@ -60,6 +60,7 @@ function initValidasiForm() {
     if (!form) return;
 
     form.addEventListener("submit", function (e) {
+        e.preventDefault(); //mencegah submit dengan nilai default lebih dahulu
         let valid = true;
 
         const judul = form.querySelector("[name='judul'], [name='nama']");
@@ -97,6 +98,30 @@ function initValidasiForm() {
                 valid = false;
             } else {
                 hapusError(stok);
+            }
+        }
+
+        function validateNumAndDash(text) {
+            for (let i = 0; i < text.length; i++) {
+                const character = text[i];
+                const isNum = character >= "0" && character <= "9";
+                const isDash = character === "-";
+                if (!isNum && !isDash) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        const isbn = form.querySelector("[name='isbn'");
+        if (isbn) {
+            const nilaiISBN = isbn.value.trim();
+            if (nilaiISBN !== "" && !validateNumAndDash(nilaiISBN)) {
+                tampilkanError(isbn, "ISBN hanya boleh berisi angka dan tanda strip (-).");
+                valid = false;
+            }
+            else {
+                hapusError(isbn);
             }
         }
 
