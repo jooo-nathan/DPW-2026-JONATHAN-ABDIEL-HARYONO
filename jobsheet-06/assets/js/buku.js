@@ -48,3 +48,18 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+// Halaman Daftar Buku — tinggal panggil fungsi generik dari app.js
+document.addEventListener("DOMContentLoaded", function () {
+    const daftarKolomBuku = ["judul", "pengarang", "tahun", "stok", "kategori"];
+
+    muatDaftarData("buku.json", daftarKolomBuku);
+
+    const btnMuatUlang = document.getElementById("btn-muat-ulang");
+    if (btnMuatUlang) {
+        btnMuatUlang.addEventListener("click", function () {
+            muatDaftarData("buku.json", daftarKolomBuku);
+        });
+    }
+});
+
