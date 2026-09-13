@@ -37,4 +37,9 @@ async function muatDaftarAnggota() {
     }
 }
 
+// Halaman Daftar Anggota — tinggal panggil fungsi generik dari app.js
+document.addEventListener("DOMContentLoaded", function () {
+    muatDaftarData("anggota.json", ["no_anggota", "nama", "alamat", "no_hp"]);
+});
+
 document.addEventListener("DOMContentLoaded", muatDaftarAnggota);

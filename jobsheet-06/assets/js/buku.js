@@ -39,10 +39,12 @@ async function muatDaftarBuku() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    muatDaftarBuku();
-
+    const daftarKolomBuku = ["judul", "pengarang", "tahun", "stok", "kategori"];
+    muatDaftarData("buku.json", daftarKolomBuku);
     const btnMuatUlang = document.getElementById("btn-muat-ulang");
     if (btnMuatUlang) {
-        btnMuatUlang.addEventListener("click", muatDaftarBuku);
+        btnMuatUlang.addEventListener("click", function () {
+            muatDaftarData("buku.json", daftarKolomBuku);
+        });
     }
 });
