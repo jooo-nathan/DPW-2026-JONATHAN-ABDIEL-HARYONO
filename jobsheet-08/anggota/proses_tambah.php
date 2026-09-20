@@ -21,18 +21,24 @@ if (!empty($errors)) {
     exit;
 }
 
-$stmt = $pdo->prepare(
-    "INSERT INTO anggota (nama, no_anggota, alamat, no_hp)
-     VALUES (:nama, :no_anggota, :alamat, :no_hp)
-     RETURNING id"
-);
-$stmt->execute([
-    'nama' => $nama,
-    'no_anggota' => $noAnggota,
-    'alamat' => $alamat,
-    'no_hp' => $noHp,
-]);
+try {
+    $stmt = $pdo->prepare(
+        "INSERT INTO anggota (nama, no_anggota, alamat, no_hp)
+        VALUES (:nama, :no_anggota, :alamat, :no_hp)
+        RETURNING id"
+    );
+    $stmt->execute([
+        'nama' => $nama,
+        'no_anggota' => $noAnggota,
+        'alamat' => $alamat,
+        'no_hp' => $noHp,
+    ]);
+}
+catch (PDOException $e){
+    $_SESSION['flash'] = ['type' => 'success', 'pesan' => 'Anggota berhasil ditambahkan.'];
+    header('Location: list.php');
+    exit;
+}
 
-$_SESSION['flash'] = ['type' => 'success', 'pesan' => 'Anggota berhasil ditambahkan.'];
-header('Location: list.php');
-exit;
+
+
