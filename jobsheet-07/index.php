@@ -25,4 +25,7 @@ $totalAnggota = count($_SESSION['anggota'] ?? []);
                 <p>0</p>
             </article>
         </section>
+        <form method="post" action="reset.php">
+            <button type="submit">Reset Data</button>
+        </form>
 <?php include __DIR__ . '/includes/footer.php'; ?>
