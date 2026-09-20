@@ -1,7 +1,8 @@
 {
   "functions": {
-    "api/**/*.php": {
-      "runtime": "@vercel/php"
+    "api/*.php": {
+      "runtime": "@vercel/php",
+      "includeFiles": "api/includes/**"
     }
   },
   "routes": [
