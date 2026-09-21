@@ -1,5 +1,6 @@
 <?php
 session_start();
+require __DIR__ . '/../includes/koneksi.php';
 
 $nama = trim($_POST['nama'] ?? '');
 $noAnggota = trim($_POST['no_anggota'] ?? '');
@@ -14,36 +15,30 @@ if ($noAnggota === '') {
     $errors[] = "No. Anggota wajib diisi.";
 }
 
-if ($nama !== '' && strlen($nama) < 3) {
-    $errors[] = "Nama minimal 3 karakter.";
-}
-if ($noHp !== '' && !preg_match('/^[0-9]{10,13}$/', $noHp)) {
-    $errors[] = "No. HP harus 10-13 digit angka.";
-}
-foreach ($_SESSION['anggota'] ?? [] as $a) {
-    if ($a['no_anggota'] === $noAnggota) {
-        $errors[] = "No. Anggota sudah dipakai.";
-        break;
-    }
-}
-
 if (!empty($errors)) {
     $_SESSION['flash'] = ['type' => 'error', 'pesan' => implode(' ', $errors)];
     header('Location: tambah.php');
     exit;
 }
 
-if (!isset($_SESSION['anggota'])) {
-    $_SESSION['anggota'] = [];
+try {
+    $stmt = $pdo->prepare(
+        "INSERT INTO anggota (nama, no_anggota, alamat, no_hp)
+        VALUES (:nama, :no_anggota, :alamat, :no_hp)
+        RETURNING id"
+    );
+    $stmt->execute([
+        'nama' => $nama,
+        'no_anggota' => $noAnggota,
+        'alamat' => $alamat,
+        'no_hp' => $noHp,
+    ]);
+}
+catch (PDOException $e){
+    $_SESSION['flash'] = ['type' => 'success', 'pesan' => 'Anggota berhasil ditambahkan.'];
+    header('Location: list.php');
+    exit;
 }
 
-$_SESSION['anggota'][] = [
-    'nama' => $nama,
-    'no_anggota' => $noAnggota,
-    'alamat' => $alamat,
-    'no_hp' => $noHp,
-];
 
-$_SESSION['flash'] = ['type' => 'success', 'pesan' => 'Anggota berhasil ditambahkan.'];
-header('Location: list.php');
-exit;
+

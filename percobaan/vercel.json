@@ -5,7 +5,7 @@
     "api/anggota/*.php": { "runtime": "vercel-php@0.9.0" }
   },
   "routes": [
-    { "handle": "filesystem" },
+    { "src": "/(?:.*/)?assets/(.*)", "dest": "/api/asset.php?f=$1" },
     { "src": "/", "dest": "/api/index.php" },
     { "src": "/(.*)", "dest": "/api/$1" }
   ]
