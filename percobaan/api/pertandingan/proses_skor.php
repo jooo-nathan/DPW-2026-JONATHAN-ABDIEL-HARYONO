@@ -38,6 +38,16 @@ if ($skor1 > $skor2) {
     $kalah  = $match['pemain1'];
 }
 
+// ===== UPDATE — satu-satunya perintah SQL di project ini yang belum
+// diajarkan di Jobsheet 8 (baru dibahas di Jobsheet 9). Polanya sebenarnya
+// mirip sekali dengan INSERT yang sudah kamu kuasai: tetap pakai
+// prepare() + placeholder ":nama" + execute([...]) supaya aman dari SQL
+// injection, cuma kata kuncinya beda:
+//   INSERT INTO tabel (kolom) VALUES (:nilai)        -> nambah baris baru
+//   UPDATE tabel SET kolom = :nilai WHERE syarat      -> ubah baris yang sudah ada
+// Baris WHERE di UPDATE itu WAJIB ada — tanpa itu, SEMUA baris di tabel
+// bakal ikut berubah, bukan cuma satu match/satu pemain yang dimaksud.
+
 // 1) Simpan skor dan tandai match selesai
 $stmt = $pdo->prepare("UPDATE pertandingan SET skor1 = :skor1, skor2 = :skor2, status = 'Completed' WHERE id = :id");
 $stmt->execute(['skor1' => $skor1, 'skor2' => $skor2, 'id' => $id]);

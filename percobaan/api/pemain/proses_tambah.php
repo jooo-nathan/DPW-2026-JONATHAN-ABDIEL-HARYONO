@@ -21,10 +21,10 @@ try {
         'game_utama' => $gameUtama,
     ]);
 } catch (PDOException $e) {
-    // Gagal biasanya karena username sudah ada (kolom UNIQUE)
+    // Gagal biasanya karena username sudah ada (kolom UNIQUE di sql/01_vanguard_arena.sql)
     header('Location: tambah.php?tipe=error&pesan=' . urlencode('Username sudah dipakai, pilih yang lain.'));
     exit;
 }
 
-header('Location: ../index.php?tipe=sukses&pesan=' . urlencode('Selamat datang di arena, ' . $username . '!'));
+header('Location: /?tipe=sukses&pesan=' . urlencode('Selamat datang di arena, ' . $username . '!'));
 exit;

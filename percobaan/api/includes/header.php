@@ -1,11 +1,3 @@
-<?php
-// Prefix relatif ke root proyek ini, supaya link CSS/JS/menu tetap benar
-// di halaman yang berada di dalam subfolder (pemain/, pertandingan/).
-$__root = dirname(__DIR__);
-$__scriptDir = dirname($_SERVER['SCRIPT_FILENAME']);
-$__rel = ltrim(str_replace('\\', '/', substr($__scriptDir, strlen($__root))), '/');
-$base = $__rel === '' ? '' : str_repeat('../', substr_count($__rel, '/') + 1);
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -15,7 +7,15 @@ $base = $__rel === '' ? '' : str_repeat('../', substr_count($__rel, '/') + 1);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Rajdhani:wght@600;700&display=swap">
-    <link rel="stylesheet" href="<?php echo $base; ?>assets/css/style.css">
+    <!--
+        Path CSS/JS & menu di bawah semua diawali garis miring ("/assets/...",
+        "/api/...") alias "path absolut". Ini selalu benar dari halaman mana pun,
+        karena situs Vercel-mu selalu hidup persis di root domain
+        (namasitus.vercel.app/...) — beda dari server lokal biasa yang kadang
+        proyeknya ada di dalam subfolder, sehingga di jobsheet kamu perlu
+        dihitung dulu ($base). Di sini perhitungan itu tidak perlu sama sekali.
+    -->
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
     <header>
@@ -23,11 +23,11 @@ $base = $__rel === '' ? '' : str_repeat('../', substr_count($__rel, '/') + 1);
         <button type="button" id="nav-toggle-btn" class="nav-toggle-label" aria-label="Menu">&#9776;</button>
         <nav>
             <ul>
-                <li><a href="<?php echo $base; ?>index.php">Home</a></li>
-                <li><a href="<?php echo $base; ?>pertandingan/list.php">Matchmaking Hub</a></li>
-                <li><a href="<?php echo $base; ?>pertandingan/tambah.php">Create Match</a></li>
-                <li><a href="<?php echo $base; ?>index.php#leaderboard">Leaderboard</a></li>
-                <li><a href="<?php echo $base; ?>pemain/tambah.php">Join Arena</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/api/pertandingan/list.php">Matchmaking Hub</a></li>
+                <li><a href="/api/pertandingan/tambah.php">Create Match</a></li>
+                <li><a href="/#leaderboard">Leaderboard</a></li>
+                <li><a href="/api/pemain/tambah.php">Join Arena</a></li>
             </ul>
         </nav>
     </header>

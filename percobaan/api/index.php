@@ -3,7 +3,7 @@ $page_title = "Home";
 include __DIR__ . '/includes/header.php';
 require __DIR__ . '/includes/koneksi.php';
 
-// Tiga angka untuk kartu statistik
+// Tiga angka untuk kartu statistik (SELECT + COUNT + ORDER BY + LIMIT, sama seperti biasa)
 $totalPemain    = $pdo->query("SELECT COUNT(*) FROM pemain")->fetchColumn();
 $sedangBerjalan = $pdo->query("SELECT COUNT(*) FROM pertandingan WHERE status = 'In-Progress'")->fetchColumn();
 $juara          = $pdo->query("SELECT * FROM pemain ORDER BY mmr DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
@@ -11,7 +11,17 @@ $juara          = $pdo->query("SELECT * FROM pemain ORDER BY mmr DESC LIMIT 1")-
 // 10 pemain dengan MMR tertinggi
 $daftarPemain = $pdo->query("SELECT * FROM pemain ORDER BY mmr DESC LIMIT 10")->fetchAll(PDO::FETCH_ASSOC);
 ?>
-        <?php if (isset($_GET['pesan'])): ?>
+        <?php
+        // Catatan soal pesan flash ("Selamat datang..." dst): di jobsheet lokal kamu,
+        // pesan begini disimpan lewat $_SESSION lalu dibaca ulang di halaman tujuan.
+        // Di Vercel itu TIDAK bisa diandalkan, karena tiap request (klik/submit form)
+        // bisa "dilayani" oleh komputer server yang berbeda-beda (ciri khas serverless) —
+        // sedangkan $_SESSION bawaan PHP disimpan sebagai file di satu komputer server
+        // tertentu. Solusinya: pesannya dititipkan langsung di alamat URL
+        // (?pesan=...&tipe=...) saat redirect, supaya sampai ke halaman tujuan
+        // apa pun servernya. htmlspecialchars() di sini mencegah teks di URL
+        // "disuntik" jadi kode HTML berbahaya.
+        if (isset($_GET['pesan'])): ?>
             <p class="flash flash-<?php echo htmlspecialchars($_GET['tipe'] ?? 'sukses'); ?>"><?php echo htmlspecialchars($_GET['pesan']); ?></p>
         <?php endif; ?>
 
@@ -19,8 +29,8 @@ $daftarPemain = $pdo->query("SELECT * FROM pemain ORDER BY mmr DESC LIMIT 10")->
             <p class="hero-kicker">Competitive Arena</p>
             <h2>Vanguard<span>Arena</span></h2>
             <p class="tagline">Forge Your Legacy, Dominate the Leaderboard.</p>
-            <a class="btn btn-primary" href="<?php echo $base; ?>pertandingan/tambah.php">Create Match</a>
-            <a class="btn btn-outline" href="<?php echo $base; ?>pertandingan/list.php">Enter Queue</a>
+            <a class="btn btn-primary" href="/api/pertandingan/tambah.php">Create Match</a>
+            <a class="btn btn-outline" href="/api/pertandingan/list.php">Enter Queue</a>
         </section>
 
         <div class="stats">
@@ -60,7 +70,6 @@ $daftarPemain = $pdo->query("SELECT * FROM pemain ORDER BY mmr DESC LIMIT 10")->
                             <tr class="peringkat-<?php echo $no; ?>">
                                 <td>
                                     <?php
-                                    // Ikon khusus untuk peringkat 1, 2, dan 3
                                     if ($no === 1) {
                                         echo '&#128081;';
                                     } elseif ($no === 2) {
