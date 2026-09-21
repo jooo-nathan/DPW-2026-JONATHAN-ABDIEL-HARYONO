@@ -21,9 +21,17 @@ $pass = urldecode($url['pass']);
 // $pass = "postgres";
 // (dan hapus juga ";sslmode=require" di DSN bawah)
 
+// Neon perlu tahu nama "endpoint"-nya (bagian pertama dari alamat host, tanpa "-pooler").
+// Library PostgreSQL di Vercel belum mengirimnya otomatis, jadi kita kirim lewat "options".
+$opsi = "";
+if (strpos($host, "neon.tech") !== false) {
+    $endpoint = str_replace("-pooler", "", explode(".", $host)[0]);
+    $opsi = ";options='endpoint=$endpoint'";
+}
+
 try {
     // sslmode=require: database online mewajibkan koneksi terenkripsi
-    $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$db;sslmode=require", $user, $pass);
+    $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$db;sslmode=require$opsi", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Koneksi database gagal (host: $host): " . $e->getMessage());

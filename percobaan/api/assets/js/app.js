@@ -10,10 +10,9 @@ function initNavToggle() {
 }
 
 // ===== Pencarian tabel real-time =====
-// Kolom #search-input menyaring baris di tabel yang punya class "filterable".
 function initTableFilter() {
     const input = document.getElementById("search-input");
-    const table = document.querySelector("table.filterable");
+    const table = document.querySelector(".table-responsive table");
     if (!input || !table) return;
 
     input.addEventListener("keyup", function () {

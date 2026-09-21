@@ -1,19 +1,18 @@
 <?php
-$page_title = "Lobbies";
-$menu_aktif = 'lobi';
+$page_title = "Matchmaking Hub";
 include __DIR__ . '/../includes/header.php';
 require __DIR__ . '/../includes/koneksi.php';
 
-$daftarMatch  = $pdo->query("SELECT * FROM pertandingan ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
-$daftarPemain = $pdo->query("SELECT username FROM pemain ORDER BY username")->fetchAll(PDO::FETCH_COLUMN);
+// Semua match, dan khusus yang sedang berjalan (untuk form Submit Score)
+$daftarMatch = $pdo->query("SELECT * FROM pertandingan ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
+$berjalan    = $pdo->query("SELECT * FROM pertandingan WHERE status = 'In-Progress' ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
-        <section class="panel">
-            <div class="panel-kepala">
-                <h2>Matchmaking Lobbies</h2>
-                <a class="btn btn-primary btn-kecil" href="tambah.php">Create Match</a>
-            </div>
+        <section>
+            <h2>Active Lobbies</h2>
 
-            <?php tampil_flash(); ?>
+            <?php if (isset($_GET['pesan'])): ?>
+                <p class="flash flash-<?php echo htmlspecialchars($_GET['tipe'] ?? 'sukses'); ?>"><?php echo htmlspecialchars($_GET['pesan']); ?></p>
+            <?php endif; ?>
 
             <div class="search-box">
                 <label for="search-input">Cari Match</label>
@@ -21,51 +20,30 @@ $daftarPemain = $pdo->query("SELECT username FROM pemain ORDER BY username")->fe
             </div>
 
             <div class="table-responsive">
-                <table class="filterable">
+                <table>
                     <thead>
                         <tr>
-                            <th>#</th>
                             <th>Game</th>
-                            <th>Match</th>
+                            <th>Player 1</th>
+                            <th>Player 2</th>
                             <th>Score</th>
                             <th>Status</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($daftarMatch)): ?>
-                            <tr><td colspan="6">Belum ada pertandingan. Klik "Create Match" untuk membuat yang pertama.</td></tr>
+                        <tr>
+                            <td colspan="5">Belum ada match. Klik "Create Match" untuk membuat yang pertama.</td>
+                        </tr>
                         <?php else: ?>
                             <?php foreach ($daftarMatch as $m): ?>
-                                <tr>
-                                    <td><?php echo (int) $m['id']; ?></td>
-                                    <td><?php echo e($m['game']); ?></td>
-                                    <td>
-                                        <?php echo e($m['pemain1']); ?> <span class="vs">vs</span>
-                                        <?php echo $m['pemain2'] ? e($m['pemain2']) : '<em class="muted">menunggu lawan</em>'; ?>
-                                    </td>
-                                    <td class="angka-tabel">
-                                        <?php echo $m['status'] === 'Completed' ? (int) $m['skor1'] . ' - ' . (int) $m['skor2'] : '-'; ?>
-                                    </td>
-                                    <td><?php echo badge_status($m['status']); ?></td>
-                                    <td>
-                                        <?php if ($m['status'] === 'Waiting'): ?>
-                                            <form class="form-join" method="post" action="proses_join.php">
-                                                <input type="hidden" name="id" value="<?php echo (int) $m['id']; ?>">
-                                                <select name="pemain2" required aria-label="Pilih lawan">
-                                                    <option value="">Pilih lawan...</option>
-                                                    <?php foreach ($daftarPemain as $u): ?>
-                                                        <?php if ($u === $m['pemain1']) continue; ?>
-                                                        <option value="<?php echo e($u); ?>"><?php echo e($u); ?></option>
-                                                    <?php endforeach; ?>
-                                                </select>
-                                                <button type="submit" class="btn btn-ghost btn-kecil">Join</button>
-                                            </form>
-                                        <?php else: ?>
-                                            <span class="muted">-</span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td><?php echo htmlspecialchars($m['game']); ?></td>
+                                <td><?php echo htmlspecialchars($m['pemain1']); ?></td>
+                                <td><?php echo $m['pemain2'] ? htmlspecialchars($m['pemain2']) : '-'; ?></td>
+                                <td><?php echo $m['status'] === 'Completed' ? $m['skor1'] . ' - ' . $m['skor2'] : '-'; ?></td>
+                                <td><span class="badge status-<?php echo strtolower($m['status']); ?>"><?php echo $m['status']; ?></span></td>
+                            </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </tbody>
@@ -73,5 +51,34 @@ $daftarPemain = $pdo->query("SELECT username FROM pemain ORDER BY username")->fe
             </div>
         </section>
 
-        <?php include __DIR__ . '/../includes/form_skor.php'; ?>
+        <section>
+            <h2>Submit Score</h2>
+
+            <?php if (empty($berjalan)): ?>
+                <p class="catatan">Belum ada match berstatus In-Progress.</p>
+            <?php else: ?>
+                <form method="post" action="proses_skor.php">
+                    <p>
+                        <label for="pertandingan_id">Match</label>
+                        <select id="pertandingan_id" name="pertandingan_id" required>
+                            <?php foreach ($berjalan as $m): ?>
+                                <option value="<?php echo $m['id']; ?>">
+                                    <?php echo htmlspecialchars($m['game'] . ': ' . $m['pemain1'] . ' vs ' . $m['pemain2']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="skor1">Skor Player 1</label>
+                        <input type="number" id="skor1" name="skor1" min="0" required>
+                    </p>
+                    <p>
+                        <label for="skor2">Skor Player 2</label>
+                        <input type="number" id="skor2" name="skor2" min="0" required>
+                    </p>
+                    <p class="catatan">Pemenang +25 MMR, yang kalah -15 MMR. Skor tidak boleh seri.</p>
+                    <p><button type="submit" class="btn btn-primary">Submit Score</button></p>
+                </form>
+            <?php endif; ?>
+        </section>
 <?php include __DIR__ . '/../includes/footer.php'; ?>

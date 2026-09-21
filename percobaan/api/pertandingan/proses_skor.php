@@ -1,59 +1,54 @@
 <?php
 require __DIR__ . '/../includes/koneksi.php';
-require __DIR__ . '/../includes/helper.php';
 
 $id    = (int) ($_POST['pertandingan_id'] ?? 0);
-$skor1 = trim($_POST['skor1'] ?? '');
-$skor2 = trim($_POST['skor2'] ?? '');
+$skor1 = (int) ($_POST['skor1'] ?? 0);
+$skor2 = (int) ($_POST['skor2'] ?? 0);
 
 // Validasi di sisi server
-$errors = [];
-if ($id <= 0) {
-    $errors[] = "Pilih pertandingan.";
+if ($id === 0) {
+    header('Location: list.php?tipe=error&pesan=' . urlencode('Pilih match terlebih dulu.'));
+    exit;
 }
-if (!ctype_digit($skor1) || !ctype_digit($skor2)) {
-    $errors[] = "Skor harus berupa angka 0 atau lebih.";
-} elseif ((int) $skor1 === (int) $skor2) {
-    $errors[] = "Skor tidak boleh seri.";
+if ($skor1 < 0 || $skor2 < 0) {
+    header('Location: list.php?tipe=error&pesan=' . urlencode('Skor tidak boleh negatif.'));
+    exit;
+}
+if ($skor1 === $skor2) {
+    header('Location: list.php?tipe=error&pesan=' . urlencode('Skor tidak boleh seri.'));
+    exit;
 }
 
-if (!empty($errors)) {
-    flash_redirect('list.php', 'error', implode(' ', $errors));
-}
-
-// Ambil pertandingan yang masih In-Progress
+// Ambil match yang masih In-Progress
 $stmt = $pdo->prepare("SELECT * FROM pertandingan WHERE id = :id AND status = 'In-Progress'");
 $stmt->execute(['id' => $id]);
 $match = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$match) {
-    flash_redirect('list.php', 'error', 'Pertandingan tidak ditemukan atau sudah selesai.');
+    header('Location: list.php?tipe=error&pesan=' . urlencode('Match tidak ditemukan atau sudah selesai.'));
+    exit;
 }
 
-$skor1 = (int) $skor1;
-$skor2 = (int) $skor2;
-$menang = $skor1 > $skor2 ? $match['pemain1'] : $match['pemain2'];
-$kalah  = $skor1 > $skor2 ? $match['pemain2'] : $match['pemain1'];
-
-// Tiga UPDATE dibungkus transaksi: semuanya berhasil, atau tidak ada yang berubah
-try {
-    $pdo->beginTransaction();
-
-    $pdo->prepare(
-        "UPDATE pertandingan SET skor1 = :skor1, skor2 = :skor2, status = 'Completed' WHERE id = :id"
-    )->execute(['skor1' => $skor1, 'skor2' => $skor2, 'id' => $id]);
-
-    $pdo->prepare("UPDATE pemain SET mmr = mmr + 25 WHERE username = :username")
-        ->execute(['username' => $menang]);
-
-    // GREATEST supaya MMR tidak pernah di bawah 0
-    $pdo->prepare("UPDATE pemain SET mmr = GREATEST(mmr - 15, 0) WHERE username = :username")
-        ->execute(['username' => $kalah]);
-
-    $pdo->commit();
-} catch (PDOException $e) {
-    $pdo->rollBack();
-    flash_redirect('list.php', 'error', 'Gagal menyimpan skor, coba lagi.');
+// Tentukan pemenang dan yang kalah
+if ($skor1 > $skor2) {
+    $menang = $match['pemain1'];
+    $kalah  = $match['pemain2'];
+} else {
+    $menang = $match['pemain2'];
+    $kalah  = $match['pemain1'];
 }
 
-flash_redirect('list.php', 'success', $menang . ' menang! +25 MMR untuk ' . $menang . ', -15 MMR untuk ' . $kalah . '.');
+// 1) Simpan skor dan tandai match selesai
+$stmt = $pdo->prepare("UPDATE pertandingan SET skor1 = :skor1, skor2 = :skor2, status = 'Completed' WHERE id = :id");
+$stmt->execute(['skor1' => $skor1, 'skor2' => $skor2, 'id' => $id]);
+
+// 2) Pemenang +25 MMR
+$stmt = $pdo->prepare("UPDATE pemain SET mmr = mmr + 25 WHERE username = :username");
+$stmt->execute(['username' => $menang]);
+
+// 3) Yang kalah -15 MMR
+$stmt = $pdo->prepare("UPDATE pemain SET mmr = mmr - 15 WHERE username = :username");
+$stmt->execute(['username' => $kalah]);
+
+header('Location: list.php?tipe=sukses&pesan=' . urlencode($menang . ' menang! +25 MMR untuk ' . $menang . ', -15 MMR untuk ' . $kalah . '.'));
+exit;

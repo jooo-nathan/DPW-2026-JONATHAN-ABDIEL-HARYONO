@@ -1,37 +1,40 @@
 # VanguardArena
 
 *Forge Your Legacy, Dominate the Leaderboard.*
-Web matchmaking esports sederhana: daftar pemain, lobi pertandingan, submit skor, dan leaderboard MMR.
-Dibuat dengan PHP + PDO + PostgreSQL, siap di-deploy ke Vercel (runtime `vercel-php`) dengan database Neon.
+Web matchmaking esports sederhana (PHP + PDO + PostgreSQL), siap di-deploy ke Vercel + Neon.
 
 ## Struktur
 ```
-vercel.json                  routing + runtime PHP untuk Vercel
-sql/01_vanguard_arena.sql    tabel pemain & pertandingan + data contoh
+vercel.json                  pengaturan Vercel (runtime PHP + routing)
+sql/01_vanguard_arena.sql    membuat tabel pemain & pertandingan + data contoh
 api/
-  index.php                  beranda: hero, statistik, Active Lobbies, Submit Score, Top 5
-  leaderboard.php            leaderboard lengkap (top 50) + pencarian
-  asset.php                  menyajikan CSS/JS di Vercel
-  includes/                  koneksi.php, helper.php, header.php, footer.php, form_skor.php
-  pemain/                    tambah.php, proses_tambah.php  (Join Arena)
-  pertandingan/              list.php, tambah.php, proses_tambah.php, proses_join.php, proses_skor.php
+  index.php                  Home: hero, 3 kartu statistik, Global Leaderboard (top 10)
+  asset.php                  menyajikan CSS/JS di Vercel (tidak perlu diubah)
+  includes/                  koneksi.php, header.php, footer.php
+  pemain/                    tambah.php (form), proses_tambah.php (INSERT)
+  pertandingan/              list.php (tabel + form skor), tambah.php (form),
+                             proses_tambah.php (INSERT), proses_skor.php (UPDATE)
   assets/                    css/style.css, js/app.js
 ```
 
 ## Cara menjalankan
-1. **Database (Neon):** buka SQL Editor, jalankan seluruh isi `sql/01_vanguard_arena.sql`.
-2. **Vercel:** Settings > Environment Variables > tambah `DATABASE_URL` (connection string Neon, diawali `postgresql://`), lalu deploy ulang.
-3. **Lokal (opsional):** buka `api/includes/koneksi.php`, ganti blok `DATABASE_URL` dengan variabel lokal (petunjuknya ada di komentar), lalu jalankan `php -S localhost:8000 -t api`.
+1. Neon > SQL Editor: jalankan seluruh isi `sql/01_vanguard_arena.sql` (menjalankan ulang = data kembali ke awal).
+2. Vercel > Settings > Environment Variables: pastikan `DATABASE_URL` berisi connection string Neon, lalu deploy.
 
-## Aturan permainan
-- Pemain baru mulai dengan **1000 MMR** (tier Silver).
-- Create Match tanpa lawan = **Waiting**; ada lawan atau di-Join = **In-Progress**.
-- Submit Score: skor tidak boleh seri. Pemenang **+25 MMR**, yang kalah **-15 MMR** (minimal 0). Match jadi **Completed**.
-- Tier: Bronze (<900), Silver (900+), Gold (1100+), Platinum (1300+), Diamond (1500+).
+## Aturan
+- Pemain baru: 1000 MMR.
+- Create Match tanpa lawan = **Waiting**, dengan lawan = **In-Progress**.
+- Submit Score (skor tidak boleh seri): pemenang +25 MMR, yang kalah -15 MMR, match jadi **Completed**.
 
-## Konsep yang dipakai
-- **PDO + prepared statement** (`:nama`) untuk semua query: SELECT, INSERT, UPDATE.
-- **Validasi server-side** dan `try/catch` (username UNIQUE, kode error `23505`).
-- **Transaksi** (`beginTransaction`, `commit`, `rollBack`) di `proses_skor.php`: tiga UPDATE berhasil semua atau tidak sama sekali.
-- **`ORDER BY mmr DESC`** untuk leaderboard, `COUNT(*)` untuk statistik.
-- Pesan sukses/error dibawa lewat alamat (`?status=...&pesan=...`), bukan session, supaya jalan di Vercel.
+## Yang dipelajari (sama dengan Jobsheet 8)
+| Konsep | Ada di |
+|---|---|
+| Koneksi PDO | `includes/koneksi.php` |
+| `SELECT` + `foreach` menampilkan tabel | `index.php`, `pertandingan/list.php` |
+| `COUNT(*)`, `ORDER BY ... DESC`, `LIMIT` | `index.php` (statistik & leaderboard) |
+| `INSERT` dengan prepared statement | `pemain/proses_tambah.php`, `pertandingan/proses_tambah.php` |
+| Validasi server + `try/catch` (username UNIQUE) | `pemain/proses_tambah.php` |
+| `UPDATE` (satu-satunya bagian di luar Jobsheet 8) | `pertandingan/proses_skor.php` |
+
+## Ide pengembangan (opsional)
+Tombol Join untuk lobi Waiting, batas MMR minimal 0, transaksi database di `proses_skor.php`, badge tier (Bronze-Diamond).

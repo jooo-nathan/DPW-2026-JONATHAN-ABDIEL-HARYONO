@@ -1,39 +1,30 @@
 <?php
 require __DIR__ . '/../includes/koneksi.php';
-require __DIR__ . '/../includes/helper.php';
 
 $username  = trim($_POST['username'] ?? '');
 $gameUtama = trim($_POST['game_utama'] ?? '');
 
 // Validasi di sisi server
-$errors = [];
-if ($username === '') {
-    $errors[] = "Username wajib diisi.";
-} elseif (!preg_match('/^[A-Za-z0-9_]{3,20}$/', $username)) {
-    $errors[] = "Username 3-20 karakter, hanya huruf, angka, dan garis bawah.";
+if (strlen($username) < 3 || strlen($username) > 20) {
+    header('Location: tambah.php?tipe=error&pesan=' . urlencode('Username harus 3-20 karakter.'));
+    exit;
 }
-if (!in_array($gameUtama, DAFTAR_GAME, true)) {
-    $errors[] = "Pilih game utama dari daftar.";
-}
-
-if (!empty($errors)) {
-    flash_redirect('tambah.php', 'error', implode(' ', $errors));
+if ($gameUtama === '') {
+    header('Location: tambah.php?tipe=error&pesan=' . urlencode('Game utama wajib dipilih.'));
+    exit;
 }
 
 try {
-    $stmt = $pdo->prepare(
-        "INSERT INTO pemain (username, game_utama) VALUES (:username, :game_utama)"
-    );
+    $stmt = $pdo->prepare("INSERT INTO pemain (username, game_utama) VALUES (:username, :game_utama)");
     $stmt->execute([
         'username'   => $username,
         'game_utama' => $gameUtama,
     ]);
 } catch (PDOException $e) {
-    // 23505 = kode error PostgreSQL untuk nilai UNIQUE yang sudah ada
-    if ($e->getCode() === '23505') {
-        flash_redirect('tambah.php', 'error', 'Username sudah dipakai, pilih yang lain.');
-    }
-    flash_redirect('tambah.php', 'error', 'Gagal mendaftar, coba lagi.');
+    // Gagal biasanya karena username sudah ada (kolom UNIQUE)
+    header('Location: tambah.php?tipe=error&pesan=' . urlencode('Username sudah dipakai, pilih yang lain.'));
+    exit;
 }
 
-flash_redirect('../leaderboard.php', 'success', 'Selamat datang di arena, ' . $username . '!');
+header('Location: ../index.php?tipe=sukses&pesan=' . urlencode('Selamat datang di arena, ' . $username . '!'));
+exit;
