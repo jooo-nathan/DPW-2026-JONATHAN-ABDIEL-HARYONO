@@ -9,7 +9,7 @@ if (getenv('DATABASE_URL')) {
 // ===== Koneksi lokal (Laragon) =====
 $host = "localhost";
 $port = "5432";
-$db   = "simpus_mini";
+$db   = "vanguard_arena";
 $user = "postgres";
 $pass = "postgres";
 

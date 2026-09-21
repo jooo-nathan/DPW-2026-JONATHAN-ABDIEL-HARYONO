@@ -1,23 +1,19 @@
 /* =====================================================
-   SIMPUS-Mini - Jobsheet 8 (aksen ungu)
-   Tema gelap: semua warna diatur lewat variabel di :root
+   VanguardArena - tema Dark Esports
    ===================================================== */
 
-/* ===== Variabel Warna (tinggal ubah di sini) ===== */
+/* ===== Variabel Warna ===== */
 :root {
-    --bg: #0f0d19;
-    --card: #181527;
-    --card-2: #211d36;
-    --garis: #322c52;
-    --teks: #e6e3f5;
-    --redup: #9d98bd;
-    --aksen: #a78bfa;
-    --aksen-gelap: #3b2a75;
-    --aksen-glow: rgba(167, 139, 250, 0.16);
-    --hijau: #34d399;
-    --merah: #f87171;
-    --kuning: #fbbf24;
-    color-scheme: dark; /* kontrol bawaan browser (scrollbar, spinner angka) ikut gelap */
+    --bg: #0F172A;        /* Deep Slate: background utama */
+    --card: #17233D;      /* latar kartu / section */
+    --garis: #334155;     /* border */
+    --teks: #F8FAFC;      /* Cool Gray */
+    --redup: #94A3B8;     /* teks pendukung */
+    --aksen: #06B6D4;     /* Electric Cyan: tombol aksi */
+    --merah: #EF4444;     /* Crimson: status live */
+    --kuning: #F59E0B;
+    --hijau: #22C55E;
+    color-scheme: dark;   /* kontrol bawaan browser ikut gelap */
 }
 
 /* ===== Reset & Base ===== */
@@ -28,10 +24,14 @@
 }
 
 body {
-    font-family: "Nunito", "Segoe UI", Arial, sans-serif;
+    font-family: "Barlow", "Segoe UI", Arial, sans-serif;
     color: var(--teks);
     background-color: var(--bg);
     line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: "Rajdhani", "Segoe UI", sans-serif;
 }
 
 a {
@@ -43,55 +43,62 @@ a:hover {
     text-decoration: underline;
 }
 
-a:focus-visible,
-button:focus-visible {
-    outline: 2px solid var(--aksen);
-    outline-offset: 2px;
-}
-
-/* ===== Header & Navbar (Flexbox, menempel di atas) ===== */
+/* ===== Header & Navbar (Flexbox) ===== */
 header {
     position: sticky;
     top: 0;
     z-index: 10;
-    background-color: var(--card);
-    color: var(--teks);
-    padding: 0.9rem 1.5rem;
-    border-bottom: 2px solid var(--aksen);
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
+    padding: 0.8rem 1.5rem;
+    background-color: var(--bg);
+    border-bottom: 2px solid var(--aksen);
 }
 
 header h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: 0.3px;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+}
+
+header h1 span {
+    color: var(--aksen);
 }
 
 header nav ul {
     list-style: none;
     display: flex;
-    gap: 0.5rem;
+    gap: 0.25rem;
 }
 
 header nav a {
     display: block;
-    color: var(--teks);
-    font-weight: 500;
     padding: 0.4rem 0.9rem;
-    border-radius: 999px;
-    transition: background-color 0.2s, color 0.2s;
+    font-family: "Rajdhani", sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--redup);
+    border-radius: 4px;
 }
 
 header nav a:hover {
-    background-color: var(--aksen-glow);
-    color: var(--aksen);
+    color: var(--teks);
+    background-color: var(--card);
     text-decoration: none;
 }
 
-/* ===== Main Layout ===== */
+.nav-toggle-label {
+    display: none;
+    font-size: 1.6rem;
+    color: var(--teks);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* ===== Layout Utama ===== */
 main {
     max-width: 1000px;
     margin: 2rem auto;
@@ -101,96 +108,126 @@ main {
 section {
     background-color: var(--card);
     border: 1px solid var(--garis);
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 
 section h2 {
     margin-bottom: 1rem;
-    font-size: 1.35rem;
-    font-weight: 600;
-    color: var(--teks);
-    border-left: 4px solid var(--aksen);
     padding-left: 0.75rem;
+    font-size: 1.5rem;
+    border-left: 4px solid var(--aksen);
 }
 
-/* ===== Hero Beranda ===== */
+/* ===== Hero ===== */
 .hero {
-    background: linear-gradient(135deg, #3a2a72 0%, var(--card) 65%);
-    padding: 2.25rem 2rem;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #0B4F5E 0%, var(--card) 60%);
+    border-top: 4px solid var(--aksen);
+}
+
+.hero-kicker {
+    font-family: "Rajdhani", sans-serif;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--aksen);
 }
 
 .hero h2 {
-    font-size: 2rem;
-    line-height: 1.25;
-    border-left: none;
+    margin-bottom: 0;
     padding-left: 0;
+    font-size: clamp(2.4rem, 8vw, 4.5rem);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    line-height: 1.1;
+    border-left: none;
 }
 
-.hero p {
-    color: var(--redup);
-    max-width: 60ch;
-}
-
-.label-db {
-    display: inline-block;
-    padding: 0.25rem 0.8rem;
-    margin-bottom: 0.9rem;
-    border: 1px solid var(--aksen);
-    border-radius: 999px;
+.hero h2 span {
     color: var(--aksen);
-    font-size: 0.85rem;
-    font-weight: 600;
 }
 
+.tagline {
+    margin: 0.75rem 0 1.5rem;
+    font-size: 1.15rem;
+    color: var(--redup);
+}
+
+/* ===== Tombol ===== */
+.btn {
+    display: inline-block;
+    margin: 0 0.5rem 0.5rem 0;
+    padding: 0.7rem 1.8rem;
+    font-family: "Rajdhani", sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 2px solid var(--aksen);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    text-decoration: none;
+    filter: brightness(1.15);
+}
+
+.btn-primary {
+    background-color: var(--aksen);
+    color: #04222B;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--aksen);
+}
 
 /* ===== Kartu Statistik (CSS Grid) ===== */
-main section:nth-of-type(2) {
+.stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
-main section:nth-of-type(2) h2 {
-    grid-column: 1 / -1; /* judul "Ringkasan" memanjang satu baris penuh */
-    margin-bottom: 0;
-}
-
-main section:nth-of-type(2) article {
-    background: linear-gradient(135deg, #2b2158, #1a2447);
-    border: 1px solid var(--garis);
-    border-radius: 10px;
+.stats article {
     padding: 1.25rem;
-    text-align: center;
-    transition: transform 0.2s;
+    background-color: var(--card);
+    border: 1px solid var(--garis);
+    border-left: 4px solid var(--aksen);
+    border-radius: 8px;
 }
 
-main section:nth-of-type(2) article:hover {
-    transform: translateY(-4px);
-}
-
-main section:nth-of-type(2) article .ikon {
-    display: block;
-    font-size: 1.9rem;
-    margin-bottom: 0.25rem;
-}
-
-main section:nth-of-type(2) article h3 {
-    font-size: 0.95rem;
-    font-weight: 500;
+.stats h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
     color: var(--redup);
-    margin-bottom: 0.25rem;
 }
 
-main section:nth-of-type(2) article p {
-    font-size: 2.2rem;
+.stats p {
+    font-family: "Rajdhani", sans-serif;
+    font-size: 2.6rem;
     font-weight: 700;
+    line-height: 1.2;
+}
+
+.stats .angka-merah {
+    color: var(--merah);
+}
+
+.stats .angka-kecil {
+    font-size: 1.9rem;
     color: var(--aksen);
 }
 
 /* ===== Tabel ===== */
+.table-responsive {
+    overflow-x: auto;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -202,88 +239,49 @@ th, td {
     border-bottom: 1px solid var(--garis);
 }
 
-thead {
-    background-color: var(--aksen-gelap);
-}
-
 th {
+    font-family: "Rajdhani", sans-serif;
+    text-transform: uppercase;
     color: var(--aksen);
-    font-weight: 600;
+    background-color: var(--bg);
     border-bottom: 2px solid var(--aksen);
-}
-
-tbody tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.03);
+    white-space: nowrap;
 }
 
 tbody tr:hover {
-    background-color: var(--aksen-glow);
+    background-color: rgba(6, 182, 212, 0.1);
 }
 
-/* ===== Badge Stok ===== */
+/* Warna baris peringkat 1, 2, 3 */
+.peringkat-1 { background-color: rgba(250, 204, 21, 0.12); }
+.peringkat-2 { background-color: rgba(203, 213, 225, 0.08); }
+.peringkat-3 { background-color: rgba(217, 119, 6, 0.10); }
+
+/* ===== Badge Status ===== */
 .badge {
     display: inline-block;
-    min-width: 2.5rem;
-    padding: 0.15rem 0.65rem;
-    border-radius: 999px;
+    padding: 0.1rem 0.7rem;
     font-size: 0.85rem;
     font-weight: 600;
-    text-align: center;
-}
-
-.badge-ok {
-    background-color: rgba(52, 211, 153, 0.15);
-    color: var(--hijau);
-}
-
-.badge-habis {
-    background-color: rgba(248, 113, 113, 0.15);
-    color: var(--merah);
-}
-
-/* ===== Tombol Aksi Tabel (gaya outline) ===== */
-td button {
-    padding: 0.3rem 0.75rem;
-    margin-right: 0.35rem;
-    background-color: transparent;
+    text-transform: uppercase;
+    white-space: nowrap;
     border: 1px solid;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 0.85rem;
-    transition: background-color 0.2s, color 0.2s, transform 0.15s;
+    border-radius: 4px;
 }
 
-td button:first-of-type {
-    border-color: var(--kuning);
-    color: var(--kuning);
-}
-
-td button:first-of-type:hover {
-    background-color: var(--kuning);
-    color: #1a1a1a;
-}
-
-td button:last-of-type {
-    border-color: var(--merah);
-    color: var(--merah);
-}
-
-td button:last-of-type:hover {
-    background-color: var(--merah);
-    color: #1a1a1a;
-    transform: scale(1.05);
-}
+.status-waiting     { color: var(--kuning); }
+.status-in-progress { color: var(--merah); }
+.status-completed   { color: var(--hijau); }
 
 /* ===== Form ===== */
 form p {
     margin-bottom: 1rem;
 }
 
-form label {
+form label,
+.search-box label {
     display: block;
-    margin-bottom: 0.35rem;
-    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
     font-weight: 600;
     color: var(--redup);
 }
@@ -294,13 +292,12 @@ form select,
     width: 100%;
     max-width: 400px;
     padding: 0.6rem 0.8rem;
-    background-color: var(--card-2);
-    color: var(--teks);
-    border: 1px solid var(--garis);
-    border-radius: 8px;
     font-family: inherit;
     font-size: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    color: var(--teks);
+    background-color: var(--bg);
+    border: 1px solid var(--garis);
+    border-radius: 6px;
 }
 
 form input:focus,
@@ -308,127 +305,52 @@ form select:focus,
 .search-box input:focus {
     outline: none;
     border-color: var(--aksen);
-    box-shadow: 0 0 0 3px var(--aksen-glow);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25);
 }
 
-::placeholder {
-    color: var(--redup);
-    opacity: 0.7;
-}
-
-form button[type="submit"] {
-    background: linear-gradient(135deg, #8b5cf6, var(--aksen));
-    color: #0b0b0b;
-    border: none;
-    padding: 0.65rem 1.6rem;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-form button[type="submit"]:hover {
-    filter: brightness(1.15);
-}
-
-/* ===== Footer ===== */
-footer {
-    text-align: center;
-    padding: 1.5rem;
-    margin-top: 1rem;
-    border-top: 1px solid var(--garis);
-    color: var(--redup);
-    font-size: 0.9rem;
-}
-
-/* ===== Tabel Responsif ===== */
-.table-responsive {
-    overflow-x: auto;
-}
-
-/* ===== Hamburger Menu (JS-driven) ===== */
-.nav-toggle-label {
-    display: none;
-    font-size: 1.6rem;
-    color: var(--teks);
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-/* ===== Flash Message ===== */
-.flash {
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    border-left: 4px solid;
-    margin-bottom: 1rem;
-    font-weight: 500;
-}
-
-.flash-success {
-    background-color: rgba(52, 211, 153, 0.12);
-    color: var(--hijau);
-    border-left-color: var(--hijau);
-}
-
-.flash-success::before {
-    content: "\2714  ";
-}
-
-.flash-error {
-    background-color: rgba(248, 113, 113, 0.12);
-    color: var(--merah);
-    border-left-color: var(--merah);
-}
-
-.flash-error::before {
-    content: "\2716  ";
-}
-
-/* ===== Pesan Error Validasi ===== */
-.error {
-    display: block;
-    color: var(--merah);
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
-}
-
-/* ===== Kolom Pencarian ===== */
 .search-box {
     margin-bottom: 1rem;
 }
 
-.search-box label {
-    display: block;
-    margin-bottom: 0.35rem;
+.catatan {
     font-size: 0.9rem;
-    font-weight: 600;
     color: var(--redup);
 }
 
-.search-box input {
-    max-width: 320px;
+/* ===== Flash Message ===== */
+.flash {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-left: 4px solid;
+    border-radius: 6px;
 }
 
-/* ===== Animasi dimatikan kalau pengguna memintanya ===== */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        transition: none !important;
-    }
+.flash-sukses {
+    color: var(--hijau);
+    background-color: rgba(34, 197, 94, 0.12);
 }
 
-/* ===== Responsive Breakpoints ===== */
+.flash-error {
+    color: var(--merah);
+    background-color: rgba(239, 68, 68, 0.12);
+}
 
-/* Tablet ke bawah */
+/* ===== Footer ===== */
+footer {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--redup);
+    border-top: 1px solid var(--garis);
+}
+
+/* ===== Responsive ===== */
 @media (max-width: 768px) {
-    main section:nth-of-type(2) {
-        grid-template-columns: repeat(2, 1fr);
+    .stats {
+        grid-template-columns: 1fr;
     }
 }
 
-/* Mobile */
-@media (max-width: 480px) {
+@media (max-width: 640px) {
     .nav-toggle-label {
         display: block;
     }
@@ -436,8 +358,7 @@ footer {
     header nav {
         display: none;
         width: 100%;
-        order: 3;
-        margin-top: 1rem;
+        margin-top: 0.75rem;
     }
 
     header nav.nav-open {
@@ -446,23 +367,9 @@ footer {
 
     header nav ul {
         flex-direction: column;
-        gap: 0.25rem;
     }
 
-    .hero {
-        padding: 1.5rem 1.25rem;
-    }
-
-    .hero h2 {
-        font-size: 1.6rem;
-    }
-
-    main section:nth-of-type(2) {
-        grid-template-columns: 1fr;
-    }
-
-    form input,
-    form select {
-        max-width: 100%;
+    .hero h2 span {
+        display: block;   /* judul jadi dua baris di layar sempit */
     }
 }
