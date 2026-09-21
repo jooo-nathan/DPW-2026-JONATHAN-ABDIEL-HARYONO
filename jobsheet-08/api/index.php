@@ -6,7 +6,8 @@ require __DIR__ . '/includes/koneksi.php';
 $totalBuku = $pdo->query("SELECT COUNT(*) FROM buku")->fetchColumn();
 $totalAnggota = $pdo->query("SELECT COUNT(*) FROM anggota")->fetchColumn();
 ?>
-        <section>
+        <section class="hero">
+            <span class="label-db">&#128452; Data tersimpan di PostgreSQL</span>
             <h2>Selamat Datang di Sistem Perpustakaan Mini</h2>
             <p>Aplikasi sederhana untuk mengelola data buku dan anggota perpustakaan.</p>
         </section>
@@ -14,14 +15,17 @@ $totalAnggota = $pdo->query("SELECT COUNT(*) FROM anggota")->fetchColumn();
         <section>
             <h2>Ringkasan</h2>
             <article>
+                <span class="ikon">&#128215;</span>
                 <h3>Total Buku</h3>
                 <p><?php echo $totalBuku; ?></p>
             </article>
             <article>
+                <span class="ikon">&#128101;</span>
                 <h3>Total Anggota</h3>
                 <p><?php echo $totalAnggota; ?></p>
             </article>
             <article>
+                <span class="ikon">&#128228;</span>
                 <h3>Sedang Dipinjam</h3>
                 <p>0</p>
             </article>
