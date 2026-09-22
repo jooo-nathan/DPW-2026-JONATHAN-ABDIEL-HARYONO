@@ -1,10 +1,15 @@
 <?php
+require_once __DIR__ . '/games.php';
+
 // Prefix relatif ke root proyek ini, supaya link CSS/JS/menu tetap benar
-// di halaman yang berada di dalam subfolder (pemain/, pertandingan/).
+// di halaman yang berada di dalam subfolder (tim/, pertandingan/).
 $__root = dirname(__DIR__);
 $__scriptDir = dirname($_SERVER['SCRIPT_FILENAME']);
 $__rel = ltrim(str_replace('\\', '/', substr($__scriptDir, strlen($__root))), '/');
 $base = $__rel === '' ? '' : str_repeat('../', substr_count($__rel, '/') + 1);
+
+// $menu_aktif diisi tiap halaman, dipakai untuk menandai menu yang sedang aktif
+$menu_aktif = $menu_aktif ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -19,15 +24,15 @@ $base = $__rel === '' ? '' : str_repeat('../', substr_count($__rel, '/') + 1);
 </head>
 <body>
     <header>
-        <h1>VANGUARD<span>ARENA</span></h1>
+        <a class="logo" href="<?php echo $base; ?>index.php">VANGUARD<span>ARENA</span></a>
         <button type="button" id="nav-toggle-btn" class="nav-toggle-label" aria-label="Menu">&#9776;</button>
         <nav>
             <ul>
-                <li><a href="<?php echo $base; ?>index.php">Home</a></li>
-                <li><a href="<?php echo $base; ?>pertandingan/list.php">Matchmaking Hub</a></li>
-                <li><a href="<?php echo $base; ?>pertandingan/tambah.php">Create Match</a></li>
+                <li><a href="<?php echo $base; ?>index.php" <?php echo $menu_aktif === 'home' ? 'class="aktif"' : ''; ?>>Home</a></li>
+                <li><a href="<?php echo $base; ?>pertandingan/list.php" <?php echo $menu_aktif === 'hub' ? 'class="aktif"' : ''; ?>>Matchmaking Hub</a></li>
+                <li><a href="<?php echo $base; ?>pertandingan/tambah.php" <?php echo $menu_aktif === 'buat' ? 'class="aktif"' : ''; ?>>Create Match</a></li>
                 <li><a href="<?php echo $base; ?>index.php#leaderboard">Leaderboard</a></li>
-                <li><a href="<?php echo $base; ?>pemain/tambah.php">Join Arena</a></li>
+                <li><a href="<?php echo $base; ?>tim/tambah.php" <?php echo $menu_aktif === 'daftar' ? 'class="aktif"' : ''; ?>>Daftarkan Tim</a></li>
             </ul>
         </nav>
     </header>

@@ -57,12 +57,20 @@ header {
     border-bottom: 2px solid var(--aksen);
 }
 
-header h1 {
+.logo {
+    font-family: "Rajdhani", sans-serif;
     font-size: 1.6rem;
+    font-weight: 700;
     letter-spacing: 2px;
+    color: var(--teks);
 }
 
-header h1 span {
+.logo:hover {
+    color: var(--teks);
+    text-decoration: none;
+}
+
+.logo span {
     color: var(--aksen);
 }
 
@@ -80,13 +88,19 @@ header nav a {
     font-weight: 600;
     text-transform: uppercase;
     color: var(--redup);
-    border-radius: 4px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
 }
 
 header nav a:hover {
     color: var(--teks);
-    background-color: var(--card);
     text-decoration: none;
+}
+
+/* Halaman yang sedang dibuka ditandai warna aksen + garis bawah */
+header nav a.aktif {
+    color: var(--aksen);
+    border-bottom-color: var(--aksen);
 }
 
 .nav-toggle-label {
@@ -183,6 +197,22 @@ section h2 {
 .btn-outline {
     background-color: transparent;
     color: var(--aksen);
+}
+
+.btn-bahaya {
+    background-color: transparent;
+    color: var(--merah);
+    border-color: var(--merah);
+}
+
+.btn-kecil {
+    padding: 0.35rem 0.9rem;
+    font-size: 0.9rem;
+}
+
+.form-reset,
+.form-hapus {
+    margin: 0;
 }
 
 /* ===== Kartu Statistik (CSS Grid) ===== */

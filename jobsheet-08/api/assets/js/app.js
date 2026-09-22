@@ -9,7 +9,7 @@ function initNavToggle() {
     });
 }
 
-// ===== Pencarian tabel real-time =====
+// ===== Pencarian tabel (khusus kolom Game) =====
 function initTableFilter() {
     const input = document.getElementById("search-input");
     const table = document.querySelector(".table-responsive table");
@@ -18,8 +18,10 @@ function initTableFilter() {
     input.addEventListener("keyup", function () {
         const keyword = input.value.toLowerCase();
         table.querySelectorAll("tbody tr").forEach(function (row) {
-            const teks = row.textContent.toLowerCase();
-            row.style.display = teks.includes(keyword) ? "" : "none";
+            const selGame = row.querySelector('[data-kolom="game"]');
+            if (!selGame) return; // baris tanpa data (pesan "Belum ada match") dilewati
+            const teksGame = selGame.textContent.toLowerCase();
+            row.style.display = teksGame.includes(keyword) ? "" : "none";
         });
     });
 }

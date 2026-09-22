@@ -29,26 +29,26 @@ if (!$match) {
     exit;
 }
 
-// Tentukan pemenang dan yang kalah
+// Tentukan tim menang dan kalah
 if ($skor1 > $skor2) {
-    $menang = $match['pemain1'];
-    $kalah  = $match['pemain2'];
+    $menang = $match['tim1'];
+    $kalah  = $match['tim2'];
 } else {
-    $menang = $match['pemain2'];
-    $kalah  = $match['pemain1'];
+    $menang = $match['tim2'];
+    $kalah  = $match['tim1'];
 }
 
 // 1) Simpan skor dan tandai match selesai
 $stmt = $pdo->prepare("UPDATE pertandingan SET skor1 = :skor1, skor2 = :skor2, status = 'Completed' WHERE id = :id");
 $stmt->execute(['skor1' => $skor1, 'skor2' => $skor2, 'id' => $id]);
 
-// 2) Pemenang +25 MMR
-$stmt = $pdo->prepare("UPDATE pemain SET mmr = mmr + 25 WHERE username = :username");
-$stmt->execute(['username' => $menang]);
+// 2) Tim menang +25 MMR
+$stmt = $pdo->prepare("UPDATE tim SET mmr = mmr + 25 WHERE nama_tim = :nama_tim");
+$stmt->execute(['nama_tim' => $menang]);
 
-// 3) Yang kalah -15 MMR
-$stmt = $pdo->prepare("UPDATE pemain SET mmr = mmr - 15 WHERE username = :username");
-$stmt->execute(['username' => $kalah]);
+// 3) Tim kalah -15 MMR
+$stmt = $pdo->prepare("UPDATE tim SET mmr = mmr - 15 WHERE nama_tim = :nama_tim");
+$stmt->execute(['nama_tim' => $kalah]);
 
 header('Location: list.php?tipe=sukses&pesan=' . urlencode($menang . ' menang! +25 MMR untuk ' . $menang . ', -15 MMR untuk ' . $kalah . '.'));
 exit;
