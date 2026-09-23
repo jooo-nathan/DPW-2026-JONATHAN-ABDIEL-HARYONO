@@ -86,7 +86,7 @@ $daftarTim = $pdo->query("SELECT * FROM tim ORDER BY mmr DESC LIMIT 10")->fetchA
 
         <section>
             <h2>Reset Data</h2>
-            <p class="catatan">Menghapus seluruh data tim dan pertandingan. Dipakai untuk mulai ulang dari kosong.</p>
+            <p class="catatan">Menghapus seluruh data tim dan pertandingan. Dipakai untuk mulai ulang dari kosong.</p><br>
             <form method="post" action="reset.php" class="form-reset">
                 <button type="submit" class="btn btn-bahaya">Reset Data</button>
             </form>

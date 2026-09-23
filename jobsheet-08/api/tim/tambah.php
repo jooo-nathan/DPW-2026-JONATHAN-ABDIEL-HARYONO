@@ -24,7 +24,7 @@ include __DIR__ . '/../includes/header.php';
                         <?php endforeach; ?>
                     </select>
                 </p>
-                <p class="catatan">Tim baru mulai dengan 1000 MMR. Nama anggota tidak disimpan di sini, cukup nama tim yang tampil di leaderboard.</p>
+                <p class="catatan">Tim baru mulai dengan 1000 MMR.</p>
                 <p><button type="submit" class="btn btn-primary">Register</button></p>
             </form>
         </section>
