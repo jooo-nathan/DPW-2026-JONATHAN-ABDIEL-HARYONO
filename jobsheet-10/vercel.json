@@ -1,17 +1,14 @@
 {
   "functions": {
-    "api/index.php": {
-      "runtime": "vercel-php@0.9.0"
-    }
+    "api/*.php": { "runtime": "vercel-php@0.9.0" },
+    "api/auth/*.php": { "runtime": "vercel-php@0.9.0" },
+    "api/tim/*.php": { "runtime": "vercel-php@0.9.0" },
+    "api/pertandingan/*.php": { "runtime": "vercel-php@0.9.0" }
   },
   "routes": [
-    {
-      "src": "/(?:.*/)?assets/(.*)",
-      "dest": "/api/assets/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/index.php"
-    }
+    { "src": "/assets/(.*)", "dest": "/api/asset.php?f=$1" },
+    { "src": "/(auth|tim|pertandingan)/([^/]+\\.php)$", "dest": "/api/$1/$2" },
+    { "src": "/reset\\.php$", "dest": "/api/reset.php" },
+    { "src": "/(.*)", "dest": "/api/index.php" }
   ]
 }
