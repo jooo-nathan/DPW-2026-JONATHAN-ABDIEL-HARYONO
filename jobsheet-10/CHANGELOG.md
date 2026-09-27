@@ -1,0 +1,26 @@
+# Changelog — VanguardArena
+
+## Tahap 1: Perubahan pada fitur Tim (mengikuti diskusi poin 1-4)
+- **Kolom baru di tabel `tim`:** `nickname` (VARCHAR(3), tag pendek ala tim esports) dan `jumlah_anggota` (INT, opsional, sekadar data tambahan).
+- **Keunikan per game:** `UNIQUE(nickname, game)` dan `UNIQUE(nama_tim, game)` menggantikan `UNIQUE(nama_tim)` tunggal — nickname/nama tim boleh dipakai ulang asal game-nya beda.
+- **Create Match jadi 2 langkah** (`?game=...` lewat GET dulu, baru dropdown tim muncul): dropdown Team 1/Team 2 otomatis hanya berisi tim dari game yang dipilih, jadi dua tim beda game tidak akan pernah bisa dipilih bersamaan. `proses_tambah.php` menambahkan pengecekan ulang di server (jaga-jaga kalau ada yang mengirim data manual).
+- **MMR update di `proses_skor.php`** sekarang menyaring `WHERE nickname = ... AND game = ...` (bukan nickname saja), supaya tidak salah sasaran ke tim lain yang kebetulan nickname-nya sama di game berbeda.
+- **Leaderboard** menampilkan `nickname` (bukan `nama_tim`), dan pencarian `data-kolom` di `app.js` digeneralisasi supaya satu fungsi JS yang sama bisa dipakai untuk kolom apa pun (Game di Matchmaking Hub, Nickname di Leaderboard).
+
+## Tahap 2: Konsep Jobsheet 9 (CRUD lengkap: Update, Delete, Pagination, Search server-side)
+- **`tim/list.php`** (baru): halaman "Kelola Tim" dengan pagination (`LIMIT`/`OFFSET`, `bindValue(..., PDO::PARAM_INT)`) dan pencarian server-side `ILIKE` berdasarkan nickname — persis pola di Jobsheet 9, diterapkan ke tabel `tim`.
+- **`tim/edit.php` + `tim/proses_edit.php`** (baru): form Update dengan `id` tersembunyi, validasi sama persis dengan pendaftaran.
+- **`tim/hapus.php`** (baru) dan `pertandingan/proses_hapus.php` (diperbarui): keduanya sekarang menolak request selain `POST` (`$_SERVER['REQUEST_METHOD']`).
+- **`app.js`**: fungsi `initHapusConfirm()` baru — dialog konfirmasi lewat event `submit` (bisa dibatalkan dengan `preventDefault()`), dipasang otomatis ke semua `<form class="form-hapus">` (dipakai bareng oleh Kelola Tim dan Matchmaking Hub).
+- Nav baru: **Kelola Tim**.
+
+*(Auth/login BELUM ada di tahap ini — semua orang masih bisa mengedit/menghapus.)*
+
+## Tahap 3: Konsep Jobsheet 10 (Autentikasi)
+- **Tabel `users`** (`sql/02_users.sql`): `nama`, `username` (UNIQUE), `password` (di-hash `password_hash()`), `role`.
+- **`api/auth/`** (baru): `register.php`+`proses_register.php`, `login.php`+`proses_login.php` (`password_verify()`), `logout.php` (`session_destroy()`).
+- **`api/includes/auth.php`** (baru): guard clause, ditaruh baris pertama di semua halaman "petugas-only": `tim/tambah.php`, `proses_tambah.php`, `edit.php`, `proses_edit.php`, `hapus.php`, `pertandingan/tambah.php`, `proses_tambah.php`, `proses_skor.php`, `proses_hapus.php`, `reset.php`.
+- **Navbar dinamis** (`header.php`): tombol Create Match/Daftarkan Tim, kolom Aksi di Kelola Tim & Matchmaking Hub, dan section Submit Score — semua disembunyikan dengan `<?php if ($sudahLogin): ?>` kalau belum login. Area kanan navbar menampilkan nama petugas + Logout, atau link Login.
+- **Halaman yang TETAP publik** (sengaja tidak dikunci, murni tampilan/baca): Home, Matchmaking Hub (lihat tabel), Kelola Tim (lihat tabel), Leaderboard.
+
+⚠️ **Catatan penting soal Vercel:** fitur login ini memakai `$_SESSION` PHP biasa (sesuai materi Jobsheet 10), dan itu bekerja normal di Laragon. Tapi di Vercel, tiap request bisa dilayani instance server yang berbeda-beda (serverless), sehingga session **kadang tidak konsisten** — bisa saja tiba-tiba "ke-logout" sendiri. Ini bukan bug di kodenya, tapi keterbatasan arsitektur Vercel untuk session berbasis file. Untuk keperluan jobsheet/demo ke dosen, jalankan fitur login ini di **Laragon (lokal)**, bukan di deployment Vercel.

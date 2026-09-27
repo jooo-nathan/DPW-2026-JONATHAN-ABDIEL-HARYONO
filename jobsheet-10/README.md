@@ -1,30 +1,42 @@
-# Jobsheet 10 — Autentikasi & Manajemen Sesi
+# VanguardArena
 
-Sub-CPMK: Menerapkan autentikasi & manajemen sesi pengguna.
+*Forge Your Legacy, Dominate the Leaderboard.*
+Web matchmaking esports berbasis tim (PHP + PDO + PostgreSQL), siap di-deploy ke Vercel + Neon.
 
-## Perubahan dari Jobsheet 9
-- Tambah `sql/02_users.sql` — tabel `users` (nama, username, password, role).
-- Tambah `auth/register.php` + `proses_register.php` (password disimpan dengan `password_hash()`, cek username duplikat), `auth/login.php` + `proses_login.php` (`password_verify()`), `auth/logout.php` (`session_destroy()`).
-- Tambah `includes/auth.php` — guard clause: redirect ke `auth/login.php` bila `$_SESSION['user_id']` belum ada. **Wajib di-include sebagai baris pertama** (sebelum `header.php`) agar `header('Location: ...')` masih bisa dipanggil sebelum ada output HTML.
-- `includes/header.php`: `session_start()` diubah jadi `if (session_status() === PHP_SESSION_NONE)` agar tidak konflik dengan `auth.php` yang juga memulai session; navbar kini menampilkan nama petugas + Logout jika sudah login, atau link Login jika belum.
-- Halaman yang **dikunci** (butuh login): `buku/tambah.php`, `buku/edit.php`, `buku/proses_tambah.php`, `buku/proses_edit.php`, `buku/hapus.php`, seluruh halaman `anggota/*`.
-- Halaman yang **tetap publik**: `index.php` (Beranda) dan `buku/list.php` (katalog buku bisa dilihat Tamu tanpa login — sesuai wireframe Jobsheet 4).
-
-## Persiapan database
-Jalankan skema tambahan:
-```bash
-psql -d simpus_mini -f sql/02_users.sql
+## Struktur
+```
+vercel.json                  pengaturan Vercel (runtime PHP + routing)
+sql/01_vanguard_arena.sql    membuat tabel tim & pertandingan (data kosong, tanpa contoh)
+api/
+  index.php                  Home: hero, 3 kartu statistik, Global Leaderboard (top 10), Reset Data
+  reset.php                  menghapus seluruh data tim & pertandingan
+  asset.php                  menyajikan CSS/JS di Vercel (tidak perlu diubah)
+  includes/                  koneksi.php (lokal), koneksi_vercel.php (Vercel), games.php (daftar game),
+                              header.php (nav + logo), footer.php
+  tim/                       tambah.php (form Daftarkan Tim), proses_tambah.php (INSERT)
+  pertandingan/              list.php (tabel + search + Hapus + Submit Score), tambah.php (form),
+                              proses_tambah.php (INSERT), proses_hapus.php (DELETE), proses_skor.php (UPDATE)
+  assets/                    css/style.css, js/app.js
 ```
 
 ## Cara menjalankan
-**Opsi 1 — PHP built-in server**:
-```bash
-php -S localhost:8000
-```
-Uji: akses `http://localhost:8000/buku/tambah.php` langsung tanpa login → harus redirect ke halaman Login. Daftar akun via Register, login, coba akses halaman yang sama → berhasil.
+1. Neon > SQL Editor: jalankan seluruh isi `sql/01_vanguard_arena.sql` (data mulai kosong, isi lewat halaman "Daftarkan Tim" dan "Create Match").
+2. Vercel > Settings > Environment Variables: pastikan `DATABASE_URL` ada, lalu deploy.
+3. Lokal (Laragon): buat database `vanguard_arena`, jalankan file SQL-nya, jalankan `php -S localhost:8000 -t api`.
 
-**Opsi 2 — Laragon (Apache)**: lewat virtual host langsung ke folder `jobsheet-10/` (mis. `http://jobsheet10.test/`), atau bersarang di bawah domain proyek (mis. `http://dp2026.test/kode-praktikum/jobsheet-10/`) — path CSS/JS/link/redirect login sudah relatif otomatis (lihat `includes/header.php` & `includes/auth.php`), jadi keduanya jalan.
+## Aturan
+- Tim baru: 1000 MMR. Nama tim harus unik.
+- Create Match tanpa lawan = **Waiting**, dengan lawan = **In-Progress**.
+- Submit Score (skor tidak boleh seri): tim menang +25 MMR, yang kalah -15 MMR, match jadi **Completed**.
+- Match apa pun (status apa pun) bisa dihapus lewat tombol Hapus di Matchmaking Hub.
+- Reset Data (di Home) menghapus seluruh isi tabel tim dan pertandingan.
 
-## Catatan
-- Guard `auth.php` sudah diverifikasi mengembalikan HTTP 302 ke `auth/login.php` untuk halaman terkunci meski database belum tersambung (guard berjalan sebelum kode butuh koneksi DB).
-- Perbedaan akses berdasarkan `role` (mis. hanya `admin` boleh hapus anggota) belum diterapkan di jobsheet ini — jadi tugas mandiri.
+## Keputusan desain (untuk dijelaskan ke dosen)
+- **Player -> Team.** Tabel `pemain` diganti `tim` (kolom `nama_tim`, bukan `username`). Semua game di `includes/games.php` adalah game beregu (Valorant, Mobile Legends, Dota 2, PUBG Mobile) — game 1v1 seperti EA FC 25 dilepas.
+- **Data awal kosong.** File SQL cuma bikin tabel, tanpa `INSERT` data contoh. Yang tetap ada dari awal cuma daftar game (`games.php`), karena itu pilihan tetap, bukan data yang berubah-ubah.
+- **Anggota tim tidak disimpan.** Supaya form dan tabel tetap sederhana (cukup `nama_tim` dan `game`), sesuai pola INSERT satu tabel yang sudah dipelajari. Bisa ditambah nanti kalau mau.
+- **Tombol "Enter Queue" dihapus.** Dulu tidak benar-benar mengantrekan apa pun, jadi diganti "Daftarkan Tim" yang fungsinya jelas.
+- **Search hanya kolom Game**, meniru latihan filter tabel di jobsheet (satu kolom), bukan filter dropdown atau pencarian di banyak kolom sekaligus.
+- **Hapus match** pakai `DELETE FROM pertandingan WHERE id = :id`, pola prepared statement yang sama dengan INSERT/UPDATE.
+- **Reset Data** memakai `DELETE FROM`, tanpa dialog konfirmasi JavaScript (`confirm()`), karena itu belum ada di jobsheet-jobsheet sebelumnya. Kalau mau ditambah nanti, tinggal bungkus tombolnya dengan `onsubmit="return confirm('yakin?')"`.
+- **Nav aktif & logo.** `header.php` mengecek `$menu_aktif` tiap halaman untuk menandai menu yang aktif (CSS `.aktif`), dan logo selalu mengarah ke `index.php`.
