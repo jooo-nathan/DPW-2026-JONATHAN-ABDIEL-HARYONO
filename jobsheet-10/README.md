@@ -8,9 +8,12 @@ Web matchmaking esports berbasis tim (PHP + PDO + PostgreSQL), siap di-deploy ke
 vercel.json                  pengaturan Vercel (runtime PHP + routing)
 sql/01_vanguard_arena.sql    membuat tabel tim & pertandingan (data kosong, tanpa contoh)
 api/
-  index.php                  Home: hero, 3 kartu statistik, Global Leaderboard (top 10), Reset Data
+  index.php                  Front controller tunggal: rute semua URL (termasu aset CSS/JS) ke file
+                              halaman yang sesuai. Ini satu-satunya Serverless Function di Vercel
+                              (lihat vercel.json) -- sengaja begini supaya tidak melewati batas
+                              jumlah function di paket Hobby.
+  home.php                   Home: hero, 3 kartu statistik, Global Leaderboard (top 10), Reset Data
   reset.php                  menghapus seluruh data tim & pertandingan
-  asset.php                  menyajikan CSS/JS di Vercel (tidak perlu diubah)
   includes/                  koneksi.php (lokal), koneksi_vercel.php (Vercel), games.php (daftar game),
                               header.php (nav + logo), footer.php
   tim/                       tambah.php (form Daftarkan Tim), proses_tambah.php (INSERT)

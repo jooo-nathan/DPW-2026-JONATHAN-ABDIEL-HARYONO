@@ -1,100 +1,70 @@
 <?php
-$page_title = "Home";
-$menu_aktif = 'home';
-include __DIR__ . '/includes/header.php';
-require __DIR__ . '/includes/koneksi.php';
+// Front controller tunggal.
+// Semua request (lihat vercel.json) masuk ke sini, lalu diteruskan ke file
+// halaman yang sesuai. Ini dipakai supaya di Vercel cuma ada SATU Serverless
+// Function terdaftar (paket Hobby dibatasi max 12 function per deployment;
+// kalau tiap halaman didaftarkan sebagai function sendiri-sendiri, jumlahnya
+// bisa lebih dari itu dan deployment ditolak).
 
-// Tiga angka untuk kartu statistik
-$totalTim       = $pdo->query("SELECT COUNT(*) FROM tim")->fetchColumn();
-$sedangBerjalan = $pdo->query("SELECT COUNT(*) FROM pertandingan WHERE status = 'In-Progress'")->fetchColumn();
-$juara          = $pdo->query("SELECT * FROM tim ORDER BY mmr DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+$__path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+$__path = '/' . ltrim((string) $__path, '/');
 
-// 10 tim dengan MMR tertinggi
-$daftarTim = $pdo->query("SELECT * FROM tim ORDER BY mmr DESC LIMIT 10")->fetchAll(PDO::FETCH_ASSOC);
-?>
-        <?php if (isset($_GET['pesan'])): ?>
-            <p class="flash flash-<?php echo htmlspecialchars($_GET['tipe'] ?? 'sukses'); ?>"><?php echo htmlspecialchars($_GET['pesan']); ?></p>
-        <?php endif; ?>
+// --- Aset statis (CSS/JS) ---
+// File di dalam api/ tidak disajikan sebagai file statis oleh Vercel,
+// jadi dibaca & dikirim manual lewat PHP di sini (dulunya di asset.php).
+if (preg_match('#^/assets/(.+)$#', $__path, $__m)) {
+    $__tipe = ['css' => 'text/css; charset=utf-8', 'js' => 'application/javascript; charset=utf-8'];
+    $__root = realpath(__DIR__ . '/assets');
+    $__file = realpath($__root . '/' . $__m[1]);
+    $__ext  = $__file ? pathinfo($__file, PATHINFO_EXTENSION) : '';
 
-        <section class="hero">
-            <p class="hero-kicker">Competitive Arena</p>
-            <h2>Vanguard<span>Arena</span></h2>
-            <p class="tagline">Forge Your Legacy, Dominate the Leaderboard.</p>
-            <a class="btn btn-primary" href="<?php echo $base; ?>pertandingan/tambah.php">Create Match</a>
-            <a class="btn btn-outline" href="<?php echo $base; ?>tim/tambah.php">Daftarkan Tim</a>
-        </section>
+    if (!$__file || strpos($__file, $__root . DIRECTORY_SEPARATOR) !== 0 || !isset($__tipe[$__ext])) {
+        http_response_code(404);
+        exit('File tidak ditemukan.');
+    }
 
-        <div class="stats">
-            <article>
-                <h3>Registered Teams</h3>
-                <p><?php echo $totalTim; ?></p>
-            </article>
-            <article>
-                <h3>Live Matches</h3>
-                <p class="angka-merah"><?php echo $sedangBerjalan; ?></p>
-            </article>
-            <article>
-                <h3>#1 Team</h3>
-                <p class="angka-kecil"><?php echo $juara ? htmlspecialchars($juara['nickname']) : '-'; ?></p>
-            </article>
-        </div>
+    header('Content-Type: ' . $__tipe[$__ext]);
+    header('Cache-Control: public, max-age=3600');
+    readfile($__file);
+    exit;
+}
 
-        <section id="leaderboard">
-            <h2>Global Leaderboard</h2>
+// --- Peta URL publik -> file halaman fisik ---
+$__routes = [
+    '/'                               => __DIR__ . '/home.php',
+    '/index.php'                      => __DIR__ . '/home.php',
+    '/reset.php'                      => __DIR__ . '/reset.php',
 
-            <div class="search-box">
-                <label for="search-input">Cari Berdasarkan Nickname</label>
-                <input type="text" id="search-input" placeholder="Ketik nickname...">
-            </div>
+    '/auth/login.php'                 => __DIR__ . '/auth/login.php',
+    '/auth/logout.php'                => __DIR__ . '/auth/logout.php',
+    '/auth/register.php'              => __DIR__ . '/auth/register.php',
+    '/auth/proses_login.php'          => __DIR__ . '/auth/proses_login.php',
+    '/auth/proses_register.php'       => __DIR__ . '/auth/proses_register.php',
 
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Nickname</th>
-                            <th>Game</th>
-                            <th>MMR</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($daftarTim)): ?>
-                        <tr>
-                            <td colspan="4">Belum ada tim. Daftarkan lewat menu "Daftarkan Tim".</td>
-                        </tr>
-                        <?php else: ?>
-                            <?php $no = 1; foreach ($daftarTim as $tim): ?>
-                            <tr class="peringkat-<?php echo $no; ?>">
-                                <td>
-                                    <?php
-                                    // Ikon khusus untuk peringkat 1, 2, dan 3
-                                    if ($no === 1) {
-                                        echo '&#128081;';
-                                    } elseif ($no === 2) {
-                                        echo '&#129352;';
-                                    } elseif ($no === 3) {
-                                        echo '&#129353;';
-                                    } else {
-                                        echo $no;
-                                    }
-                                    ?>
-                                </td>
-                                <td data-kolom><?php echo htmlspecialchars($tim['nickname']); ?></td>
-                                <td><?php echo htmlspecialchars($tim['game']); ?></td>
-                                <td><?php echo $tim['mmr']; ?></td>
-                            </tr>
-                            <?php $no++; endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+    '/tim/list.php'                   => __DIR__ . '/tim/list.php',
+    '/tim/tambah.php'                 => __DIR__ . '/tim/tambah.php',
+    '/tim/edit.php'                   => __DIR__ . '/tim/edit.php',
+    '/tim/hapus.php'                  => __DIR__ . '/tim/hapus.php',
+    '/tim/proses_tambah.php'          => __DIR__ . '/tim/proses_tambah.php',
+    '/tim/proses_edit.php'            => __DIR__ . '/tim/proses_edit.php',
 
-        <section>
-            <h2>Reset Data</h2>
-            <p class="catatan">Menghapus seluruh data tim dan pertandingan. Dipakai untuk mulai ulang dari kosong.</p>
-            <form method="post" action="reset.php" class="form-reset">
-                <button type="submit" class="btn btn-bahaya">Reset Data</button>
-            </form>
-        </section>
-<?php include __DIR__ . '/includes/footer.php'; ?>
+    '/pertandingan/list.php'          => __DIR__ . '/pertandingan/list.php',
+    '/pertandingan/tambah.php'        => __DIR__ . '/pertandingan/tambah.php',
+    '/pertandingan/proses_tambah.php' => __DIR__ . '/pertandingan/proses_tambah.php',
+    '/pertandingan/proses_hapus.php'  => __DIR__ . '/pertandingan/proses_hapus.php',
+    '/pertandingan/proses_skor.php'   => __DIR__ . '/pertandingan/proses_skor.php',
+];
+
+$__target = $__routes[$__path] ?? null;
+
+if ($__target === null) {
+    http_response_code(404);
+    $page_title = '404';
+    $menu_aktif = '';
+    include __DIR__ . '/includes/header.php';
+    echo '<section><h2>404</h2><p>Halaman tidak ditemukan.</p></section>';
+    include __DIR__ . '/includes/footer.php';
+    exit;
+}
+
+require $__target;

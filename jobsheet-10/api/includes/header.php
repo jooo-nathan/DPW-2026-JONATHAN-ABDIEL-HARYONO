@@ -3,9 +3,13 @@ require_once __DIR__ . '/games.php';
 
 // Prefix relatif ke root proyek ini, supaya link CSS/JS/menu tetap benar
 // di halaman yang berada di dalam subfolder (tim/, pertandingan/).
-$__root = dirname(__DIR__);
-$__scriptDir = dirname($_SERVER['SCRIPT_FILENAME']);
-$__rel = ltrim(str_replace('\\', '/', substr($__scriptDir, strlen($__root))), '/');
+// Dihitung dari URL yang diminta browser (REQUEST_URI), BUKAN dari
+// SCRIPT_FILENAME -- karena di Vercel semua request dilayani satu front
+// controller (api/index.php), jadi SCRIPT_FILENAME selalu sama untuk
+// halaman apa pun yang sedang dibuka.
+$__reqPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+$__rel = trim(dirname($__reqPath), '/');
+$__rel = $__rel === '.' ? '' : $__rel;
 $base = $__rel === '' ? '' : str_repeat('../', substr_count($__rel, '/') + 1);
 
 // $menu_aktif diisi tiap halaman, dipakai untuk menandai menu yang sedang aktif

@@ -9,11 +9,12 @@ if (session_status() === PHP_SESSION_NONE) {
 
 if (!isset($_SESSION['user_id'])) {
     // Path relatif dihitung sendiri (logikanya sama seperti $base di
-    // header.php) supaya redirect ini benar baik dipanggil dari file di
-    // root api/ (reset.php) maupun dari dalam subfolder (tim/, pertandingan/).
-    $__root = dirname(__DIR__);
-    $__scriptDir = dirname($_SERVER['SCRIPT_FILENAME']);
-    $__rel = ltrim(str_replace('\\', '/', substr($__scriptDir, strlen($__root))), '/');
+    // header.php, dari REQUEST_URI) supaya redirect ini benar baik dipanggil
+    // dari file di root api/ (reset.php) maupun dari dalam subfolder
+    // (tim/, pertandingan/).
+    $__reqPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $__rel = trim(dirname($__reqPath), '/');
+    $__rel = $__rel === '.' ? '' : $__rel;
     $__base = $__rel === '' ? '' : str_repeat('../', substr_count($__rel, '/') + 1);
     header('Location: ' . $__base . 'auth/login.php');
     exit;
