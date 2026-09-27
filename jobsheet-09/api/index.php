@@ -1,29 +1,100 @@
 <?php
-$page_title = "Beranda";
+$page_title = "Home";
+$menu_aktif = 'home';
 include __DIR__ . '/includes/header.php';
 require __DIR__ . '/includes/koneksi.php';
 
-$totalBuku = $pdo->query("SELECT COUNT(*) FROM buku")->fetchColumn();
-$totalAnggota = $pdo->query("SELECT COUNT(*) FROM anggota")->fetchColumn();
+// Tiga angka untuk kartu statistik
+$totalTim       = $pdo->query("SELECT COUNT(*) FROM tim")->fetchColumn();
+$sedangBerjalan = $pdo->query("SELECT COUNT(*) FROM pertandingan WHERE status = 'In-Progress'")->fetchColumn();
+$juara          = $pdo->query("SELECT * FROM tim ORDER BY mmr DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+
+// 10 tim dengan MMR tertinggi
+$daftarTim = $pdo->query("SELECT * FROM tim ORDER BY mmr DESC LIMIT 10")->fetchAll(PDO::FETCH_ASSOC);
 ?>
-        <section>
-            <h2>Selamat Datang di Sistem Perpustakaan Mini</h2>
-            <p>Aplikasi sederhana untuk mengelola data buku dan anggota perpustakaan.</p>
+        <?php if (isset($_GET['pesan'])): ?>
+            <p class="flash flash-<?php echo htmlspecialchars($_GET['tipe'] ?? 'sukses'); ?>"><?php echo htmlspecialchars($_GET['pesan']); ?></p>
+        <?php endif; ?>
+
+        <section class="hero">
+            <p class="hero-kicker">Competitive Arena</p>
+            <h2>Vanguard<span>Arena</span></h2>
+            <p class="tagline">Forge Your Legacy, Dominate the Leaderboard.</p>
+            <a class="btn btn-primary" href="<?php echo $base; ?>pertandingan/tambah.php">Create Match</a>
+            <a class="btn btn-outline" href="<?php echo $base; ?>tim/tambah.php">Daftarkan Tim</a>
+        </section>
+
+        <div class="stats">
+            <article>
+                <h3>Registered Teams</h3>
+                <p><?php echo $totalTim; ?></p>
+            </article>
+            <article>
+                <h3>Live Matches</h3>
+                <p class="angka-merah"><?php echo $sedangBerjalan; ?></p>
+            </article>
+            <article>
+                <h3>#1 Team</h3>
+                <p class="angka-kecil"><?php echo $juara ? htmlspecialchars($juara['nickname']) : '-'; ?></p>
+            </article>
+        </div>
+
+        <section id="leaderboard">
+            <h2>Global Leaderboard</h2>
+
+            <div class="search-box">
+                <label for="search-input">Cari Berdasarkan Nickname</label>
+                <input type="text" id="search-input" placeholder="Ketik nickname...">
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Nickname</th>
+                            <th>Game</th>
+                            <th>MMR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($daftarTim)): ?>
+                        <tr>
+                            <td colspan="4">Belum ada tim. Daftarkan lewat menu "Daftarkan Tim".</td>
+                        </tr>
+                        <?php else: ?>
+                            <?php $no = 1; foreach ($daftarTim as $tim): ?>
+                            <tr class="peringkat-<?php echo $no; ?>">
+                                <td>
+                                    <?php
+                                    // Ikon khusus untuk peringkat 1, 2, dan 3
+                                    if ($no === 1) {
+                                        echo '&#128081;';
+                                    } elseif ($no === 2) {
+                                        echo '&#129352;';
+                                    } elseif ($no === 3) {
+                                        echo '&#129353;';
+                                    } else {
+                                        echo $no;
+                                    }
+                                    ?>
+                                </td>
+                                <td data-kolom><?php echo htmlspecialchars($tim['nickname']); ?></td>
+                                <td><?php echo htmlspecialchars($tim['game']); ?></td>
+                                <td><?php echo $tim['mmr']; ?></td>
+                            </tr>
+                            <?php $no++; endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
         </section>
 
         <section>
-            <h2>Ringkasan</h2>
-            <article>
-                <h3>Total Buku</h3>
-                <p><?php echo $totalBuku; ?></p>
-            </article>
-            <article>
-                <h3>Total Anggota</h3>
-                <p><?php echo $totalAnggota; ?></p>
-            </article>
-            <article>
-                <h3>Sedang Dipinjam</h3>
-                <p>0</p>
-            </article>
+            <h2>Reset Data</h2>
+            <p class="catatan">Menghapus seluruh data tim dan pertandingan. Dipakai untuk mulai ulang dari kosong.</p>
+            <form method="post" action="reset.php" class="form-reset">
+                <button type="submit" class="btn btn-bahaya">Reset Data</button>
+            </form>
         </section>
 <?php include __DIR__ . '/includes/footer.php'; ?>

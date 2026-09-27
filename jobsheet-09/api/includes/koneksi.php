@@ -1,7 +1,15 @@
 <?php
+// Di Vercel, alamat database disimpan sebagai Environment Variable (DATABASE_URL),
+// jadi kita pakai file koneksi khusus. Di komputer sendiri bagian ini dilewati.
+if (getenv('DATABASE_URL')) {
+    require __DIR__ . '/koneksi_vercel.php';
+    return;
+}
+
+// ===== Koneksi lokal (Laragon) =====
 $host = "localhost";
 $port = "5432";
-$db   = "simpus_mini";
+$db   = "vanguard_arena";
 $user = "postgres";
 $pass = "postgres";
 
