@@ -1,0 +1,484 @@
+/* =====================================================
+   VanguardArena - tema Dark Esports
+   ===================================================== */
+
+/* ===== Variabel Warna ===== */
+:root {
+    --bg: #0F172A;        /* Deep Slate: background utama */
+    --card: #17233D;      /* latar kartu / section */
+    --garis: #334155;     /* border */
+    --teks: #F8FAFC;      /* Cool Gray */
+    --redup: #94A3B8;     /* teks pendukung */
+    --aksen: #06B6D4;     /* Electric Cyan: tombol aksi */
+    --merah: #EF4444;     /* Crimson: status live */
+    --kuning: #F59E0B;
+    --hijau: #22C55E;
+    color-scheme: dark;   /* kontrol bawaan browser ikut gelap */
+}
+
+/* ===== Reset & Base ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Barlow", "Segoe UI", Arial, sans-serif;
+    color: var(--teks);
+    background-color: var(--bg);
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: "Rajdhani", "Segoe UI", sans-serif;
+}
+
+a {
+    color: var(--aksen);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ===== Header & Navbar (Flexbox) ===== */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 0.8rem 1.5rem;
+    background-color: var(--bg);
+    border-bottom: 2px solid var(--aksen);
+}
+
+.logo {
+    font-family: "Rajdhani", sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--teks);
+}
+
+.logo:hover {
+    color: var(--teks);
+    text-decoration: none;
+}
+
+.logo span {
+    color: var(--aksen);
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 0.25rem;
+}
+
+header nav a {
+    display: block;
+    padding: 0.4rem 0.9rem;
+    font-family: "Rajdhani", sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--redup);
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+header nav a:hover {
+    color: var(--teks);
+    text-decoration: none;
+}
+
+/* Halaman yang sedang dibuka ditandai warna aksen + garis bawah */
+header nav a.aktif {
+    color: var(--aksen);
+    border-bottom-color: var(--aksen);
+}
+
+.nav-toggle-label {
+    display: none;
+    font-size: 1.6rem;
+    color: var(--teks);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* ===== Layout Utama ===== */
+main {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+section {
+    background-color: var(--card);
+    border: 1px solid var(--garis);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+section h2 {
+    margin-bottom: 1rem;
+    padding-left: 0.75rem;
+    font-size: 1.5rem;
+    border-left: 4px solid var(--aksen);
+}
+
+/* ===== Hero ===== */
+.hero {
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #0B4F5E 0%, var(--card) 60%);
+    border-top: 4px solid var(--aksen);
+}
+
+.hero-kicker {
+    font-family: "Rajdhani", sans-serif;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--aksen);
+}
+
+.hero h2 {
+    margin-bottom: 0;
+    padding-left: 0;
+    font-size: clamp(2.4rem, 8vw, 4.5rem);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    line-height: 1.1;
+    border-left: none;
+}
+
+.hero h2 span {
+    color: var(--aksen);
+}
+
+.tagline {
+    margin: 0.75rem 0 1.5rem;
+    font-size: 1.15rem;
+    color: var(--redup);
+}
+
+/* ===== Tombol ===== */
+.btn {
+    display: inline-block;
+    margin: 0 0.5rem 0.5rem 0;
+    padding: 0.7rem 1.8rem;
+    font-family: "Rajdhani", sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 2px solid var(--aksen);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    text-decoration: none;
+    filter: brightness(1.15);
+}
+
+.btn-primary {
+    background-color: var(--aksen);
+    color: #04222B;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--aksen);
+}
+
+.btn-bahaya {
+    background-color: transparent;
+    color: var(--merah);
+    border-color: var(--merah);
+}
+
+.btn-kecil {
+    padding: 0.35rem 0.9rem;
+    font-size: 0.9rem;
+}
+
+.form-reset,
+.form-hapus {
+    margin: 0;
+}
+
+/* ===== Kartu Statistik (CSS Grid) ===== */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stats article {
+    padding: 1.25rem;
+    background-color: var(--card);
+    border: 1px solid var(--garis);
+    border-left: 4px solid var(--aksen);
+    border-radius: 8px;
+}
+
+.stats h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    color: var(--redup);
+}
+
+.stats p {
+    font-family: "Rajdhani", sans-serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.stats .angka-merah {
+    color: var(--merah);
+}
+
+.stats .angka-kecil {
+    font-size: 1.9rem;
+    color: var(--aksen);
+}
+
+/* ===== Tabel ===== */
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 0.7rem 0.85rem;
+    border-bottom: 1px solid var(--garis);
+}
+
+th {
+    font-family: "Rajdhani", sans-serif;
+    text-transform: uppercase;
+    color: var(--aksen);
+    background-color: var(--bg);
+    border-bottom: 2px solid var(--aksen);
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background-color: rgba(6, 182, 212, 0.1);
+}
+
+/* Warna baris peringkat 1, 2, 3 */
+.peringkat-1 { background-color: rgba(250, 204, 21, 0.12); }
+.peringkat-2 { background-color: rgba(203, 213, 225, 0.08); }
+.peringkat-3 { background-color: rgba(217, 119, 6, 0.10); }
+
+/* ===== Badge Status ===== */
+.badge {
+    display: inline-block;
+    padding: 0.1rem 0.7rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border: 1px solid;
+    border-radius: 4px;
+}
+
+.status-waiting     { color: var(--kuning); }
+.status-in-progress { color: var(--merah); }
+.status-completed   { color: var(--hijau); }
+
+/* ===== Form ===== */
+form p {
+    margin-bottom: 1rem;
+}
+
+form label,
+.search-box label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    color: var(--redup);
+}
+
+form input,
+form select,
+.search-box input {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.6rem 0.8rem;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--teks);
+    background-color: var(--bg);
+    border: 1px solid var(--garis);
+    border-radius: 6px;
+}
+
+form input:focus,
+form select:focus,
+.search-box input:focus {
+    outline: none;
+    border-color: var(--aksen);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25);
+}
+
+.search-box {
+    margin-bottom: 1rem;
+}
+
+.catatan {
+    font-size: 0.9rem;
+    color: var(--redup);
+    margin-bottom: 1rem;
+}
+
+/* ===== Kepala Section dengan Tombol Aksi ===== */
+.panel-kepala {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.panel-kepala h2 {
+    margin-bottom: 0;
+}
+
+/* ===== Form Pencarian sebagai satu baris (form method="get") ===== */
+.search-box {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.search-box label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    color: var(--redup);
+}
+
+/* ===== Navigasi Halaman (Pagination) ===== */
+.pagination {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.pagination a {
+    display: inline-block;
+    min-width: 2.2rem;
+    padding: 0.3rem 0.6rem;
+    text-align: center;
+    border: 1px solid var(--garis);
+    border-radius: 6px;
+    color: var(--teks);
+}
+
+.pagination a:hover {
+    border-color: var(--aksen);
+    text-decoration: none;
+}
+
+.pagination a.active {
+    background-color: var(--aksen);
+    color: #04222B;
+    border-color: var(--aksen);
+    font-weight: 600;
+}
+
+/* ===== Status Login di Navbar (Jobsheet 10) ===== */
+.auth-status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--teks);
+    font-size: 0.95rem;
+}
+
+.auth-status span {
+    color: var(--redup);
+}
+
+.auth-status a {
+    color: var(--aksen);
+    text-decoration: underline;
+}
+
+
+/* ===== Flash Message ===== */
+.flash {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-left: 4px solid;
+    border-radius: 6px;
+}
+
+.flash-sukses {
+    color: var(--hijau);
+    background-color: rgba(34, 197, 94, 0.12);
+}
+
+.flash-error {
+    color: var(--merah);
+    background-color: rgba(239, 68, 68, 0.12);
+}
+
+/* ===== Footer ===== */
+footer {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--redup);
+    border-top: 1px solid var(--garis);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .nav-toggle-label {
+        display: block;
+    }
+
+    header nav {
+        display: none;
+        width: 100%;
+        margin-top: 0.75rem;
+    }
+
+    header nav.nav-open {
+        display: block;
+    }
+
+    header nav ul {
+        flex-direction: column;
+    }
+
+    .hero h2 span {
+        display: block;   /* judul jadi dua baris di layar sempit */
+    }
+}
