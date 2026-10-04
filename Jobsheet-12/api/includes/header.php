@@ -56,9 +56,9 @@ $sudahLogin = isset($_SESSION['user_id']);
         <div class="auth-status">
             <?php if ($sudahLogin): ?>
                 <span><?php echo e($_SESSION['nama']); ?></span>
-                <a href="<?php echo $base; ?>auth/logout.php">Logout</a>
+                <a href="<?php echo $base; ?>auth/logout.php" class="btn btn-outline btn-kecil">Logout</a>
             <?php else: ?>
-                <a href="<?php echo $base; ?>auth/login.php">Login</a>
+                <a href="<?php echo $base; ?>auth/login.php" class="btn btn-primary btn-kecil">Login</a>
             <?php endif; ?>
         </div>
     </header>
