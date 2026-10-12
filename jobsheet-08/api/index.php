@@ -39,7 +39,7 @@ $daftarTim = $pdo->query("SELECT * FROM tim ORDER BY mmr DESC LIMIT 10")->fetchA
             </article>
         </div>
 
-        <section id="leaderboard">
+        <section>
             <h2>Global Leaderboard</h2>
             <div class="table-responsive">
                 <table>
