@@ -3,6 +3,7 @@
    Tata letak: sidebar vertikal di kiri | Tema: hijau gelap (mengacu Jobsheet 7)
    ===================================================== */
 
+/* Variabel warna & ukuran. Dipanggil dengan var(--nama). Ganti nilai di sini = tema berubah di seluruh halaman. */
 :root {
     --bg: #0c1416;
     --card: #142125;
@@ -19,8 +20,10 @@
     color-scheme: dark;
 }
 
+/* RESET: hapus margin/padding bawaan browser; border-box = lebar sudah termasuk padding + border. */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Gaya dasar seluruh halaman: font, warna teks, latar, jarak antar baris. */
 body {
     font-family: "Poppins", "Segoe UI", Arial, sans-serif;
     color: var(--teks);
@@ -28,10 +31,13 @@ body {
     line-height: 1.6;
 }
 
+/* Tautan: warna aksen, tanpa garis bawah. */
 a { color: var(--aksen); text-decoration: none; }
+/* Pseudo-class :hover = saat kursor di atas tautan -> muncul garis bawah. */
 a:hover { text-decoration: underline; }
 
 /* ===== Sidebar (header menjadi panel vertikal tetap di kiri) ===== */
+/* SIDEBAR: header dibuat panel tetap di kiri. position:fixed = menempel, tidak ikut scroll. display:flex + column = isi tersusun ke bawah. */
 header {
     position: fixed;
     top: 0;
@@ -47,6 +53,7 @@ header {
     overflow-y: auto;
 }
 
+/* Judul aplikasi di sidebar, diberi garis pemisah di bawahnya. */
 header h1 {
     font-size: 1.4rem;
     letter-spacing: 0.3px;
@@ -54,8 +61,10 @@ header h1 {
     border-bottom: 1px solid var(--garis);
 }
 
+/* Daftar menu: bullet dihapus, disusun vertikal dengan Flexbox (column) dan jarak gap. */
 header nav ul { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
 
+/* Tautan menu: display:block supaya seluruh baris bisa diklik; border kiri transparan disiapkan untuk efek hover. */
 header nav a {
     display: block;
     color: var(--teks);
@@ -64,6 +73,7 @@ header nav a {
     border-radius: 0 8px 8px 0;
 }
 
+/* Efek hover menu: latar menyala, teks dan border kiri berwarna aksen. */
 header nav a:hover {
     background-color: var(--aksen-glow);
     color: var(--aksen);
@@ -72,12 +82,14 @@ header nav a:hover {
 }
 
 /* ===== Konten (digeser ke kanan sebesar lebar sidebar) ===== */
+/* KONTEN: digeser ke kanan sebesar lebar sidebar (margin-left) agar tidak tertimpa sidebar yang fixed. */
 main {
     margin-left: var(--lebar-sidebar);
     padding: 2rem;
     max-width: calc(var(--lebar-sidebar) + 1000px);
 }
 
+/* Kartu/bagian konten: latar, border, sudut membulat (border-radius), bayangan (box-shadow). */
 section {
     background-color: var(--card);
     border: 1px solid var(--garis);
@@ -87,6 +99,7 @@ section {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 
+/* Judul tiap section; inline-block membuat garis bawah hanya selebar teks. */
 section h2 {
     margin-bottom: 1rem;
     font-size: 1.3rem;
@@ -95,10 +108,12 @@ section h2 {
     display: inline-block;
 }
 
+/* Section pertama di main (kotak sambutan) diberi latar gradasi. */
 main section:first-of-type {
     background: linear-gradient(135deg, #14403f 0%, var(--card) 70%);
 }
 
+/* Kaki halaman: ikut digeser margin-left seperti main. */
 footer {
     margin-left: var(--lebar-sidebar);
     padding: 1.5rem 2rem;
@@ -108,14 +123,21 @@ footer {
 }
 
 /* ===== Tabel ===== */
+/* TABEL: lebar penuh; collapse = garis antar sel menyatu. */
 table { width: 100%; border-collapse: collapse; }
+/* Sel tabel: rata kiri, padding, garis bawah tipis. */
 th, td { text-align: left; padding: 0.7rem 0.85rem; border-bottom: 1px solid var(--garis); }
+/* Latar baris judul kolom. */
 thead { background-color: var(--aksen-gelap); }
+/* Warna teks judul kolom + garis bawah tebal. */
 th { color: var(--aksen); border-bottom: 2px solid var(--aksen); }
+/* nth-child(even) = baris genap diberi latar sedikit berbeda (belang). */
 tbody tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.03); }
+/* Baris disorot saat kursor lewat. */
 tbody tr:hover { background-color: var(--aksen-glow); }
 
 /* ===== Tombol ===== */
+/* TOMBOL di dalam tabel (Edit/Hapus): outline warna aksen, latar transparan. */
 td button {
     padding: 0.3rem 0.75rem;
     margin: 0 0.3rem 0.2rem 0;
@@ -127,16 +149,24 @@ td button {
     font-family: inherit;
     font-size: 0.85rem;
 }
+/* Hover tombol: terisi warna aksen. */
 td button:hover { background-color: var(--aksen); color: #0b0b0b; }
+/* Tombol urutan ke-2 diberi warna kuning. (Pewarnaan berdasar URUTAN: rapuh bila jumlah tombol berubah; solusi: pakai class.) */
 td button:nth-of-type(2) { border-color: var(--kuning); color: var(--kuning); }
+/* Hover tombol ke-2. */
 td button:nth-of-type(2):hover { background-color: var(--kuning); color: #0b0b0b; }
+/* Tombol TERAKHIR (Hapus) diberi warna merah. */
 td button:last-of-type { border-color: var(--merah); color: var(--merah); }
+/* Hover tombol terakhir. */
 td button:last-of-type:hover { background-color: var(--merah); color: #0b0b0b; }
 
 /* ===== Form ===== */
+/* FORM: jarak antar kelompok field. */
 form p { margin-bottom: 1rem; }
+/* Label tampil di atas input (display:block). */
 form label { display: block; margin-bottom: 0.3rem; font-size: 0.9rem; font-weight: 600; color: var(--redup); }
 
+/* Gaya seragam input/select/textarea; max-width membatasi lebar di desktop. */
 form input, form select, form textarea {
     width: 100%;
     max-width: 420px;
@@ -148,12 +178,14 @@ form input, form select, form textarea {
     font-family: inherit;
     font-size: 1rem;
 }
+/* Pseudo-class :focus = saat input aktif diketik: border aksen + cincin cahaya (box-shadow). */
 form input:focus, form select:focus, form textarea:focus {
     outline: none;
     border-color: var(--aksen);
     box-shadow: 0 0 0 3px var(--aksen-glow);
 }
 
+/* Tombol Simpan: selector atribut [type=submit]; latar gradasi. */
 form button[type="submit"] {
     background: linear-gradient(135deg, #14b8a6, var(--aksen));
     color: #0b0b0b;
@@ -165,38 +197,55 @@ form button[type="submit"] {
     font-weight: 600;
     cursor: pointer;
 }
+/* Hover tombol Simpan: lebih terang (filter brightness). */
 form button[type="submit"]:hover { filter: brightness(1.15); }
 
 /* ===== Kartu Statistik (grid 2 kolom, cocok untuk area konten di samping sidebar) ===== */
+/* KARTU STATISTIK: section ke-2 di main (Ringkasan) menjadi CSS GRID 2 kolom (repeat(2,1fr)), gap = jarak antar kartu. */
 main section:nth-of-type(2) { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+/* Judul Ringkasan merentang semua kolom (1 / -1 = dari garis kolom pertama sampai terakhir). */
 main section:nth-of-type(2) h2 { grid-column: 1 / -1; margin-bottom: 0; }
+/* Satu kartu statistik: latar, garis aksen di kiri, sudut membulat. */
 main section:nth-of-type(2) article {
     background-color: var(--card-2);
     border-left: 4px solid var(--aksen);
     border-radius: 10px;
     padding: 1.1rem 1.25rem;
 }
+/* Label kartu (kecil, redup). */
 main section:nth-of-type(2) article h3 { font-size: 0.95rem; font-weight: 500; color: var(--redup); }
+/* Angka statistik (besar, tebal, warna aksen). */
 main section:nth-of-type(2) article p { font-size: 2rem; font-weight: 700; color: var(--aksen); line-height: 1.3; }
 
+/* Pembungkus tabel: overflow-x:auto = bisa digeser ke samping bila tabel lebih lebar dari layar. */
 .table-responsive { overflow-x: auto; }
 
+/* Pesan error validasi (dibuat JS, class 'error'): merah, tampil di bawah input. */
 .error { display: block; color: var(--merah); font-size: 0.85rem; margin-top: 0.25rem; }
+/* Kotak pencarian tabel: jarak bawah. */
 .search-box { margin-bottom: 1rem; }
+/* Lebar maksimal input pencarian. */
 .search-box input { max-width: 320px; }
+/* Pseudo-element: gaya teks petunjuk (placeholder) di dalam input. */
 ::placeholder { color: var(--redup); opacity: 0.7; }
 
 /* ===== Hamburger (dikendalikan JS: class .nav-open) ===== */
+/* Tombol hamburger: DISEMBUNYIKAN di desktop (display:none), baru tampil di layar kecil lewat media query. */
 .nav-toggle-label { display: none; font-size: 1.6rem; color: var(--teks); background: none; border: none; cursor: pointer; }
 
+/* MEDIA QUERY (responsif): aturan di dalamnya hanya berlaku bila lebar layar <= 768px. Isinya: sidebar jadi bar atas, menu disembunyikan, hamburger muncul, konten tidak digeser lagi, kartu statistik 1 kolom. */
 @media (max-width: 768px) {
-    header { position: static; width: 100%%; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; border-right: none; border-bottom: 2px solid var(--aksen); }
+    /* Di layar kecil: header tidak fixed lagi, tersusun baris (row) dan boleh turun baris (wrap). */
+    header { position: static; width: 100%; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; border-right: none; border-bottom: 2px solid var(--aksen); }
     header h1 { border-bottom: none; padding: 0; }
     .nav-toggle-label { display: block; }
-    header nav { display: none; width: 100%%; order: 3; }
+    /* Menu disembunyikan; order:3 = dipindah ke baris paling bawah di header. */
+    header nav { display: none; width: 100%; order: 3; }
+    /* Saat JS menambah class nav-open -> menu tampil. (Class ini diatur toggle di app.js) */
     header nav.nav-open { display: block; }
+    /* Tidak perlu menggeser konten karena sidebar sudah jadi bar atas. */
     main, footer { margin-left: 0; }
     main { padding: 1rem; }
     main section:nth-of-type(2) { grid-template-columns: 1fr; }
-    form input, form select, form textarea { max-width: 100%%; }
+    form input, form select, form textarea { max-width: 100%; }
 }

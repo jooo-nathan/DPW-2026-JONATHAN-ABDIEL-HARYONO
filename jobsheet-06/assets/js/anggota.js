@@ -1,3 +1,11 @@
+// =====================================================================
+// anggota.js  -  skrip KHUSUS halaman anggota/list.html
+// Dimuat SETELAH app.js, jadi muatDaftarData() sudah tersedia.
+// =====================================================================
+
+// CATATAN (sisa percobaan): fungsi LAMA di bawah sekarang tidak sengaja
+// ikut dipanggil di baris paling bawah file ini. Lihat catatan di sana.
+
 // Mengambil & menampilkan Daftar Anggota secara asinkron dari data/anggota.json
 async function muatDaftarAnggota() {
     const tbody = document.querySelector(".table-responsive table tbody");
@@ -18,6 +26,7 @@ async function muatDaftarAnggota() {
 
         daftarAnggota.forEach(function (anggota) {
             const tr = document.createElement("tr");
+            // kolom ditulis manual (hardcode) -> versi lama sebelum generik
             tr.innerHTML =
                 "<td>" + anggota.no_anggota + "</td>" +
                 "<td>" + anggota.nama + "</td>" +
@@ -37,9 +46,16 @@ async function muatDaftarAnggota() {
     }
 }
 
+// --- PEMANGGIL VERSI GENERIK (yang seharusnya dipakai) ---
 // Halaman Daftar Anggota — tinggal panggil fungsi generik dari app.js
+// Parameter 2 = urutan kolom tabel (harus sama dengan <th> di list.html)
 document.addEventListener("DOMContentLoaded", function () {
     muatDaftarData("anggota.json", ["no_anggota", "nama", "alamat", "no_hp"]);
 });
 
+// --- PEMANGGIL VERSI LAMA (DUPLIKAT) ---
+// CATATAN PENTING: baris ini memanggil fungsi lama di atas, jadi data anggota
+// dimuat DUA KALI (sekali lewat generik, sekali lewat versi lama). Hasil
+// akhir tetap benar tetapi boros. Perbaikan: hapus baris di bawah ini
+// (dan fungsi muatDaftarAnggota di atas) setelah paham perbedaannya.
 document.addEventListener("DOMContentLoaded", muatDaftarAnggota);

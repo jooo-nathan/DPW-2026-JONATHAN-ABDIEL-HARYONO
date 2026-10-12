@@ -1,15 +1,26 @@
+<!-- Deklarasi: dokumen ini HTML5. -->
 <!DOCTYPE html>
+<!-- Elemen akar; lang=id memberi tahu browser/pembaca layar bahasa halaman. -->
 <html lang="id">
+<!-- HEAD: informasi tentang halaman (tidak tampil di layar). -->
 <head>
+    <!-- Encoding UTF-8 agar huruf/simbol tampil benar. -->
     <meta charset="UTF-8">
+    <!-- WAJIB untuk responsif: lebar halaman mengikuti lebar perangkat (tanpa ini media query tidak jalan di HP). -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Judul di tab browser. -->
     <title>SIMPUS-Mini | Daftar Anggota</title>
+    <!-- Menghubungkan file CSS. Path relatif: '../' naik satu folder (halaman di subfolder), tanpa '../' untuk index.html. -->
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
+<!-- BODY: semua yang tampil di layar. -->
 <body>
+    <!-- HEADER = SIDEBAR (CSS membuatnya panel kiri): judul, tombol hamburger, menu. -->
     <header>
         <h1>SIMPUS-Mini</h1>
+        <!-- Tombol hamburger. type=button agar tidak submit form. Diklik -> JS (initNavToggle di app.js) menambah class nav-open pada <nav>. &#9776; = ikon tiga garis. -->
         <button type="button" id="nav-toggle-btn" class="nav-toggle-label" aria-label="Menu">&#9776;</button>
+        <!-- NAV: kumpulan tautan navigasi. Daftar menu memakai ul/li. -->
         <nav>
             <ul>
                 <li><a href="../index.html">Beranda</a></li>
@@ -20,16 +31,21 @@
         </nav>
     </header>
 
+    <!-- MAIN: isi utama halaman (hanya satu per halaman). -->
     <main>
         <section>
             <h2>Daftar Anggota</h2>
+            <!-- Kotak pencarian. id='search-input' dipakai initTableFilter() di app.js. label for=... harus sama dengan id input. -->
             <div class="search-box">
                 <label for="search-input">Cari Nama Anggota</label>
                 <input type="text" id="search-input" placeholder="Ketik nama anggota...">
             </div>
+            <!-- Indikator loading: disembunyikan (display:none); JS menampilkannya saat fetch berjalan, lalu menyembunyikannya di blok finally. -->
             <p id="loading-indicator" style="display:none;">Memuat data...</p>
+            <!-- Pembungkus tabel (overflow-x:auto): tabel bisa digeser ke samping di layar kecil. -->
             <div class="table-responsive">
             <table>
+                <!-- THEAD: baris judul kolom. Jumlah & urutan <th> harus sama dengan daftarKunci di JS (+1 kolom Aksi). -->
                 <thead>
                     <tr>
                         <th>No. Anggota</th>
@@ -39,6 +55,7 @@
                         <th>Aksi</th>
                     </tr>
                 </thead>
+                <!-- TBODY: isi data. Sengaja kosong: baris dibuat JS lewat fetch (appendChild). -->
                 <tbody>
                     <!-- Baris diisi dinamis oleh assets/js/anggota.js via fetch('../data/anggota.json') -->
                 </tbody>
@@ -47,10 +64,13 @@
         </section>
     </main>
 
+    <!-- FOOTER: kaki halaman. -->
     <footer>
         <p>&copy; 2026 SIMPUS-Mini &mdash; Jobsheet 6</p>
     </footer>
+    <!-- JS UTAMA dimuat paling bawah body (elemen sudah ada saat skrip jalan). Harus SEBELUM skrip halaman karena menyediakan muatDaftarData(). -->
     <script src="../assets/js/app.js"></script>
+    <!-- Skrip khusus halaman ini: memanggil muatDaftarData('anggota.json', ...). -->
     <script src="../assets/js/anggota.js"></script>
 </body>
 </html>

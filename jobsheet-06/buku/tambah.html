@@ -1,15 +1,26 @@
+<!-- Deklarasi: dokumen ini HTML5. -->
 <!DOCTYPE html>
+<!-- Elemen akar; lang=id memberi tahu browser/pembaca layar bahasa halaman. -->
 <html lang="id">
+<!-- HEAD: informasi tentang halaman (tidak tampil di layar). -->
 <head>
+    <!-- Encoding UTF-8 agar huruf/simbol tampil benar. -->
     <meta charset="UTF-8">
+    <!-- WAJIB untuk responsif: lebar halaman mengikuti lebar perangkat (tanpa ini media query tidak jalan di HP). -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Judul di tab browser. -->
     <title>SIMPUS-Mini | Tambah Buku</title>
+    <!-- Menghubungkan file CSS. Path relatif: '../' naik satu folder (halaman di subfolder), tanpa '../' untuk index.html. -->
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
+<!-- BODY: semua yang tampil di layar. -->
 <body>
+    <!-- HEADER = SIDEBAR (CSS membuatnya panel kiri): judul, tombol hamburger, menu. -->
     <header>
         <h1>SIMPUS-Mini</h1>
+        <!-- Tombol hamburger. type=button agar tidak submit form. Diklik -> JS (initNavToggle di app.js) menambah class nav-open pada <nav>. &#9776; = ikon tiga garis. -->
         <button type="button" id="nav-toggle-btn" class="nav-toggle-label" aria-label="Menu">&#9776;</button>
+        <!-- NAV: kumpulan tautan navigasi. Daftar menu memakai ul/li. -->
         <nav>
             <ul>
                 <li><a href="../index.html">Beranda</a></li>
@@ -20,32 +31,40 @@
         </nav>
     </header>
 
+    <!-- MAIN: isi utama halaman (hanya satu per halaman). -->
     <main>
         <section>
             <h2>Tambah Buku</h2>
+            <!-- Form. id='form-tambah' = penanda yang dicari initValidasiForm() di app.js untuk memasang validasi. -->
             <form id="form-tambah">
                 <p>
                     <label for="judul">Judul</label><br>
+                    <!-- input text: id dipasangkan dengan label for; name = nama data yang dikirim & dicari validasi JS; required = wajib diisi (validasi bawaan browser) -->
                     <input type="text" id="judul" name="judul" required>
                 </p>
                 <p>
                     <label for="pengarang">Pengarang</label><br>
+                    <!-- input text: id dipasangkan dengan label for; name = nama data yang dikirim & dicari validasi JS; required = wajib diisi (validasi bawaan browser) -->
                     <input type="text" id="pengarang" name="pengarang" required>
                 </p>
                 <p>
                     <label for="tahun">Tahun Terbit</label><br>
+                    <!-- input number: id dipasangkan dengan label for; name = nama data yang dikirim & dicari validasi JS; required = wajib diisi (validasi bawaan browser); min/max = batas angka -->
                     <input type="number" id="tahun" name="tahun" min="1900" max="2026" required>
                 </p>
                 <p>
                     <label for="isbn">ISBN</label><br>
+                    <!-- input text: id dipasangkan dengan label for; name = nama data yang dikirim & dicari validasi JS -->
                     <input type="text" id="isbn" name="isbn">
                 </p>
                 <p>
                     <label for="stok">Stok</label><br>
+                    <!-- input number: id dipasangkan dengan label for; name = nama data yang dikirim & dicari validasi JS; required = wajib diisi (validasi bawaan browser); min/max = batas angka -->
                     <input type="number" id="stok" name="stok" min="0" required>
                 </p>
                 <p>
                     <label for="kategori">Kategori</label><br>
+                    <!-- Dropdown: <option value=...> = nilai yang dikirim, teks di antara tag = yang dilihat pengguna. -->
                     <select id="kategori" name="kategori">
                         <option value="fiksi">Fiksi</option>
                         <option value="non-fiksi">Non-Fiksi</option>
@@ -53,15 +72,18 @@
                     </select>
                 </p>
                 <p>
+                    <!-- Tombol kirim form. Saat diklik terjadi event 'submit' (dicegat validasi JS bila ada yang salah). -->
                     <button type="submit">Simpan</button>
                 </p>
             </form>
         </section>
     </main>
 
+    <!-- FOOTER: kaki halaman. -->
     <footer>
         <p>&copy; 2026 SIMPUS-Mini &mdash; Jobsheet 6</p>
     </footer>
+    <!-- JS UTAMA dimuat paling bawah body (elemen sudah ada saat skrip jalan). Harus SEBELUM skrip halaman karena menyediakan muatDaftarData(). -->
     <script src="../assets/js/app.js"></script>
 </body>
 </html>
