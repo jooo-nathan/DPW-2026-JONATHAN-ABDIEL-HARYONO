@@ -5,8 +5,8 @@ $menu_aktif = 'kelola';
 include __DIR__ . '/../includes/header.php';
 require __DIR__ . '/../includes/koneksi.php';
 
-$id = $_GET['id'] ?? null;
-if (!$id) {
+$id = (int) ($_GET['id'] ?? 0);
+if ($id < 1) {
     header('Location: list.php');
     exit;
 }

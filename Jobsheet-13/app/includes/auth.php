@@ -4,9 +4,8 @@
 // header('Location: ...') masih bisa dipanggil (belum ada HTML terkirim).
 require_once __DIR__ . '/helpers.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/session.php';
+mulai_session();
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: ' . base_path() . 'auth/login.php');

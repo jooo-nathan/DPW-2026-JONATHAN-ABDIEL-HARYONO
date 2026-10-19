@@ -1,119 +1,66 @@
 <?php
-$page_title = "Home";
-$menu_aktif = 'home';
-include __DIR__ . '/includes/header.php';
-require __DIR__ . '/includes/koneksi.php';
+// Front controller untuk Vercel: SEMUA request masuk lewat file ini
+// (lihat "routes" di vercel.json), lalu diteruskan ke file di folder app/.
+// Satu entry point = satu serverless function, dan file CSS/JS ikut
+// disajikan dari sini, jadi tampilan tidak lagi "polos tanpa CSS".
 
-// Tiga angka untuk kartu statistik
-$totalTim       = $pdo->query("SELECT COUNT(*) FROM tim")->fetchColumn();
-$sedangBerjalan = $pdo->query("SELECT COUNT(*) FROM pertandingan WHERE status = 'In-Progress'")->fetchColumn();
-$juara          = $pdo->query("SELECT * FROM tim ORDER BY mmr DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+$appDir = realpath(__DIR__ . '/../app');
 
-// Match yang sedang berlangsung (panel "Sedang berlangsung" di hero)
-$liveMatch = $pdo->query("SELECT game, tim1, tim2 FROM pertandingan WHERE status = 'In-Progress' ORDER BY id DESC LIMIT 3")->fetchAll(PDO::FETCH_ASSOC);
+// Path yang diminta (tanpa query string). Utamakan parameter __r dari vercel.json.
+$route = $_GET['__r'] ?? null;
+if ($route === null) {
+    $route = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+}
+unset($_GET['__r']);
+$route = trim(rawurldecode((string) $route), '/');
+if ($route === '') {
+    $route = 'index.php';
+}
 
-// 10 tim dengan MMR tertinggi
-$daftarTim = $pdo->query("SELECT * FROM tim ORDER BY mmr DESC LIMIT 10")->fetchAll(PDO::FETCH_ASSOC);
-?>
-        <?php if (isset($_GET['pesan'])): ?>
-            <p class="flash flash-<?php echo e($_GET['tipe'] ?? 'sukses'); ?>"><?php echo e($_GET['pesan']); ?></p>
-        <?php endif; ?>
+// Header keamanan dasar
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('Referrer-Policy: strict-origin-when-cross-origin');
 
-        <section class="hero">
-            <div>
-                <h2>Selamat Datang di Vanguard Arena</h2>
-                <p class="tagline">Platform matchmaking esports berbasis tim. Daftarkan tim, buat pertandingan, dan rebut puncak Global Leaderboard.</p>
-                <p class="hero-aksi">
-                    <a class="btn btn-primary" href="<?php echo $base; ?>pertandingan/tambah.php">Create Match</a>
-                    <a class="btn btn-outline" href="<?php echo $base; ?>tim/tambah.php">Daftarkan Tim</a>
-                </p>
-            </div>
-            <div class="live-now">
-                <h3>Sedang berlangsung</h3>
-                <?php if (empty($liveMatch)): ?>
-                    <p class="kosong">Belum ada match yang berjalan.</p>
-                <?php else: ?>
-                    <ul>
-                        <?php foreach ($liveMatch as $m): ?>
-                        <li><span><?php echo e($m['game']); ?></span> <strong><?php echo e($m['tim1']); ?> vs <?php echo e($m['tim2']); ?></strong></li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php endif; ?>
-            </div>
-        </section>
+// ---- 1) File statis: /assets/css/style.css, /assets/js/app.js ----
+if (preg_match('#^assets/(css|js)/[A-Za-z0-9_.-]+\.(css|js)$#', $route, $m)) {
+    $file = realpath($appDir . '/' . $route);
+    if ($file && strpos($file, $appDir . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR) === 0) {
+        $tipe = ['css' => 'text/css; charset=utf-8', 'js' => 'application/javascript; charset=utf-8'];
+        header('Content-Type: ' . $tipe[$m[2]]);
+        header('Cache-Control: public, max-age=3600');
+        readfile($file);
+        exit;
+    }
+}
 
-        <div class="stats">
-            <article>
-                <h3>Registered Teams</h3>
-                <p><?php echo (int) $totalTim; ?></p>
-            </article>
-            <article>
-                <h3>Live Matches</h3>
-                <p class="angka-merah"><?php echo (int) $sedangBerjalan; ?></p>
-            </article>
-            <article>
-                <h3>#1 Team</h3>
-                <p class="angka-kecil"><?php echo $juara ? e($juara['nickname']) : '-'; ?></p>
-            </article>
-        </div>
+// ---- 2) Halaman PHP: hanya yang ada di daftar putih ----
+// Pola: index.php | reset.php | {auth|tim|pertandingan}/nama_file.php
+// Folder includes/ sengaja TIDAK bisa diakses langsung dari URL.
+if (preg_match('#^((auth|tim|pertandingan)/)?[a-z_]+\.php$#', $route)) {
+    $file = realpath($appDir . '/' . $route);
+    if ($file && strpos($file, $appDir . DIRECTORY_SEPARATOR) === 0 && is_file($file)) {
+        // Dipakai base_path() untuk menghitung awalan path relatif (../)
+        define('APP_ROUTE', $route);
+        chdir(dirname($file));
+        try {
+            require $file;
+        } catch (Throwable $e) {
+            error_log('[Vanguard Arena] ' . $e);
+            if (!headers_sent()) {
+                http_response_code(500);
+            }
+            echo 'Terjadi kesalahan pada server.';
+            if (getenv('APP_DEBUG')) {
+                echo '<pre>' . htmlspecialchars((string) $e, ENT_QUOTES, 'UTF-8') . '</pre>';
+            }
+        }
+        exit;
+    }
+}
 
-        <section id="leaderboard">
-            <h2>Global Leaderboard</h2>
-
-            <div class="search-box">
-                <label for="search-input">Cari Berdasarkan Nickname</label>
-                <input type="text" id="search-input" placeholder="Ketik nickname...">
-            </div>
-
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Nickname</th>
-                            <th>Game</th>
-                            <th>MMR</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($daftarTim)): ?>
-                        <tr>
-                            <td colspan="4">Belum ada tim. Daftarkan lewat menu "Daftarkan Tim".</td>
-                        </tr>
-                        <?php else: ?>
-                            <?php $no = 1; foreach ($daftarTim as $tim): ?>
-                            <tr class="peringkat-<?php echo $no; ?>">
-                                <td>
-                                    <?php
-                                    // Ikon khusus untuk peringkat 1, 2, dan 3
-                                    if ($no === 1) {
-                                        echo '&#128081;';
-                                    } elseif ($no === 2) {
-                                        echo '&#129352;';
-                                    } elseif ($no === 3) {
-                                        echo '&#129353;';
-                                    } else {
-                                        echo $no;
-                                    }
-                                    ?>
-                                </td>
-                                <td data-kolom><?php echo e($tim['nickname']); ?></td>
-                                <td><?php echo e($tim['game']); ?></td>
-                                <td><?php echo (int) $tim['mmr']; ?></td>
-                            </tr>
-                            <?php $no++; endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section>
-            <h2>Reset Data</h2>
-            <p class="catatan">Menghapus seluruh data tim dan pertandingan. Dipakai untuk mulai ulang dari kosong.</p>
-            <form method="post" action="reset.php" class="form-reset">
-                <?php echo csrf_field(); ?>
-                <button type="submit" class="btn btn-bahaya">Reset Data</button>
-            </form>
-        </section>
-<?php include __DIR__ . '/includes/footer.php'; ?>
+// ---- 3) Tidak ditemukan ----
+http_response_code(404);
+header('Content-Type: text/html; charset=utf-8');
+echo '<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><title>404</title></head><body style="font-family:sans-serif;padding:2rem">'
+   . '<h1>404 &mdash; Halaman tidak ditemukan</h1><p><a href="/">Kembali ke Home</a></p></body></html>';

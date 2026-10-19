@@ -14,7 +14,7 @@ Audit menyeluruh terhadap kode Jobsheet 7-10, dengan bukti before/after.
 - `includes/auth.php` (guard login) selalu dijalankan **sebelum** `csrf_verify()` di halaman proses, jadi yang belum login langsung diarahkan ke Login.
 - `csrf_verify()` mengembalikan HTTP 403 dan `die()` bila token tidak ada/tidak cocok.
 - Form pencarian (`method="get"`) sengaja **tidak** diberi token karena hanya membaca data.
-- Session berbasis file PHP hanya stabil di server biasa (php -S, Laragon, hosting PHP). Di platform serverless sesi bisa hilang antar-request, jadi jalankan demo di server biasa.
+- Di server biasa session memakai file PHP; di Vercel (serverless) session disimpan di tabel PostgreSQL `sessions` (`app/includes/session.php`) karena file `/tmp` tidak dibagi antar-instance. Logout kini POST + CSRF.
 
 ## Cara Menguji
 1. **CSRF** (setelah login): `curl -X POST http://localhost:8000/tim/proses_tambah.php -d "nickname=x"` → 403 "token CSRF tidak valid".

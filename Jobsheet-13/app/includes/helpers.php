@@ -7,12 +7,19 @@ function e($value)
     return htmlspecialchars((string) ($value ?? ''), ENT_QUOTES, 'UTF-8');
 }
 
-// Awalan path relatif menuju ROOT proyek, dihitung dari kedalaman folder
-// halaman yang sedang dibuka: "" (root), "../" (tim/, auth/, ...), dst.
+// Awalan path relatif menuju ROOT proyek, dihitung dari kedalaman halaman
+// yang sedang dibuka: "" (root), "../" (tim/, auth/, ...), dst.
 // Dipakai header.php & auth.php supaya link CSS/JS/menu/redirect benar
-// di mana pun proyek ditaruh (php -S, Laragon, virtual host, subfolder).
+// di mana pun proyek ditaruh (Vercel, php -S, Laragon, subfolder).
 function base_path()
 {
+    // Di Vercel, api/index.php (front controller) mendefinisikan APP_ROUTE,
+    // mis. "tim/list.php" -> kedalaman 1 -> "../".
+    if (defined('APP_ROUTE')) {
+        return str_repeat('../', substr_count(APP_ROUTE, '/'));
+    }
+
+    // Di server biasa: hitung dari lokasi file yang sedang dijalankan.
     $root = str_replace('\\', '/', realpath(__DIR__ . '/..'));
     $dir  = str_replace('\\', '/', realpath(dirname($_SERVER['SCRIPT_FILENAME'])));
     $rel  = trim(substr($dir, strlen($root)), '/');

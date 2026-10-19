@@ -1,7 +1,6 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../includes/session.php';
+mulai_session();
 require __DIR__ . '/../includes/koneksi.php';
 require __DIR__ . '/../includes/csrf.php';
 

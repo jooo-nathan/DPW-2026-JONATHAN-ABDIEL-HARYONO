@@ -4,6 +4,8 @@
 
 function csrf_token()
 {
+    require_once __DIR__ . '/session.php';
+    mulai_session();
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }
@@ -17,6 +19,8 @@ function csrf_field()
 
 function csrf_verify()
 {
+    require_once __DIR__ . '/session.php';
+    mulai_session();
     $token = $_POST['csrf_token'] ?? '';
     if ($token === '' || !hash_equals($_SESSION['csrf_token'] ?? '', $token)) {
         http_response_code(403);

@@ -6,13 +6,13 @@ require __DIR__ . '/../includes/csrf.php';
 csrf_verify();
 require __DIR__ . '/../includes/games.php';
 
-$id             = $_POST['id'] ?? null;
+$id             = (int) ($_POST['id'] ?? 0);
 $nickname       = strtoupper(trim($_POST['nickname'] ?? ''));
 $namaTim        = trim($_POST['nama_tim'] ?? '');
 $jumlahAnggota  = trim($_POST['jumlah_anggota'] ?? '');
 $game           = trim($_POST['game'] ?? '');
 
-if (!$id) {
+if ($id < 1) {
     header('Location: list.php');
     exit;
 }
@@ -38,6 +38,32 @@ if ($jumlahAnggota !== '' && (!ctype_digit($jumlahAnggota) || (int) $jumlahAnggo
 $jumlahAnggota = $jumlahAnggota === '' ? null : (int) $jumlahAnggota;
 
 try {
+    $pdo->beginTransaction();
+
+    $lama = $pdo->prepare("SELECT nickname, game FROM tim WHERE id = :id FOR UPDATE");
+    $lama->execute(['id' => $id]);
+    $timLama = $lama->fetch(PDO::FETCH_ASSOC);
+    if (!$timLama) {
+        $pdo->rollBack();
+        header('Location: list.php');
+        exit;
+    }
+
+    // Match menyimpan NICKNAME tim (bukan id). Kalau nickname/game berubah,
+    // referensi di tabel pertandingan harus ikut diperbarui supaya tidak yatim.
+    $nickBerubah = $timLama['nickname'] !== $nickname;
+    $gameBerubah = $timLama['game'] !== $game;
+
+    if ($gameBerubah) {
+        $adaMatch = $pdo->prepare("SELECT COUNT(*) FROM pertandingan WHERE game = :game AND (tim1 = :n1 OR tim2 = :n2)");
+        $adaMatch->execute(['game' => $timLama['game'], 'n1' => $timLama['nickname'], 'n2' => $timLama['nickname']]);
+        if ($adaMatch->fetchColumn() > 0) {
+            $pdo->rollBack();
+            header('Location: edit.php?id=' . $id . '&tipe=error&pesan=' . urlencode('Game tidak bisa diganti karena tim ini sudah punya pertandingan.'));
+            exit;
+        }
+    }
+
     $stmt = $pdo->prepare(
         "UPDATE tim SET nickname = :nickname, nama_tim = :nama_tim, jumlah_anggota = :jumlah_anggota, game = :game
          WHERE id = :id"
@@ -49,7 +75,19 @@ try {
         'game'           => $game,
         'id'             => $id,
     ]);
+
+    if ($nickBerubah && !$gameBerubah) {
+        foreach (['tim1', 'tim2'] as $kolom) {
+            $upd = $pdo->prepare("UPDATE pertandingan SET $kolom = :baru WHERE game = :game AND $kolom = :lama");
+            $upd->execute(['baru' => $nickname, 'game' => $game, 'lama' => $timLama['nickname']]);
+        }
+    }
+
+    $pdo->commit();
 } catch (PDOException $e) {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
     header('Location: edit.php?id=' . urlencode($id) . '&tipe=error&pesan=' . urlencode('Nickname atau nama tim sudah dipakai untuk game ini.'));
     exit;
 }

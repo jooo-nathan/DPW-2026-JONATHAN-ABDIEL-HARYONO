@@ -10,9 +10,8 @@ $base = base_path();
 $menu_aktif = $menu_aktif ?? '';
 
 // Status login (Jobsheet 10)
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/session.php';
+mulai_session();
 $sudahLogin = isset($_SESSION['user_id']);
 
 // Penanda menu aktif -> atribut aria-current (dipakai CSS untuk menyorot menu)
@@ -27,6 +26,7 @@ function menu_cur($kunci, $aktif)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vanguard Arena<?php echo isset($page_title) ? ' | ' . e($page_title) : ''; ?></title>
+    <link rel="icon" href="data:,">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Oxanium:wght@500;600;700&amp;display=swap">
@@ -67,7 +67,10 @@ function menu_cur($kunci, $aktif)
             <div class="auth-status">
                 <?php if ($sudahLogin): ?>
                     <p>Masuk sebagai <strong><?php echo e($_SESSION['nama']); ?></strong></p>
-                    <a href="<?php echo $base; ?>auth/logout.php" class="btn btn-outline btn-kecil">Logout</a>
+                    <form method="post" action="<?php echo $base; ?>auth/logout.php">
+                        <?php echo csrf_field(); ?>
+                        <button type="submit" class="btn btn-outline btn-kecil">Logout</button>
+                    </form>
                 <?php else: ?>
                     <p>Anda melihat sebagai tamu.</p>
                     <a href="<?php echo $base; ?>auth/login.php" class="btn btn-primary btn-kecil">Login petugas</a>

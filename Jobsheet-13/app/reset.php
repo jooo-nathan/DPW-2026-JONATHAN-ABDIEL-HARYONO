@@ -13,8 +13,11 @@ csrf_verify();
 
 // Kosongkan kedua tabel. Urutan penting: pertandingan dihapus dulu
 // karena datanya merujuk ke nama tim.
+$pdo->beginTransaction();
+$pdo->exec("DELETE FROM riwayat_mmr");
 $pdo->exec("DELETE FROM pertandingan");
 $pdo->exec("DELETE FROM tim");
+$pdo->commit();
 
 header('Location: index.php?tipe=sukses&pesan=' . urlencode('Semua data berhasil direset.'));
 exit;

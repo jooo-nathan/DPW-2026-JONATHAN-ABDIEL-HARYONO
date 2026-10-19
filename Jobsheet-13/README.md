@@ -65,24 +65,27 @@ UQ(nama_tim, game)
 
    Contoh produksi:
    ```bash
-   DB_HOST=127.0.0.1 DB_USER=produser DB_PASS=rahasia DB_SSLMODE=require php -S localhost:8000
+   DB_HOST=127.0.0.1 DB_USER=produser DB_PASS=rahasia DB_SSLMODE=require php -S localhost:8000 -t app
    ```
 4. Jalankan:
-   - **PHP built-in server:** `php -S localhost:8000`, lalu buka `http://localhost:8000/index.php`
+   - **PHP built-in server:** `php -S localhost:8000 -t app`, lalu buka `http://localhost:8000/`
    - **Laragon / Apache:** arahkan virtual host ke folder ini, atau taruh di subfolder `www` (path relatif dihitung otomatis).
 5. Buka halaman **Login petugas**, pilih **Daftar di sini**, buat akun petugas pertama.
 
 ## Struktur folder
 ```
 Jobsheet-13/
-├── index.php              Home (statistik + leaderboard dari database)
-├── reset.php              Kosongkan data (POST + CSRF)
-├── includes/              config, koneksi, header (sidebar), footer, auth, csrf, helpers, games
-├── assets/css, assets/js  tema Volt Lobby + interaksi
-├── tim/                   CRUD tim, riwayat MMR
-├── pertandingan/          list, buat, hapus, submit skor
-├── auth/                  register, login, logout
-├── sql/                   skema 01-03 (jalankan berurutan)
+├── api/index.php          Router Vercel (satu-satunya serverless function)
+├── vercel.json            Konfigurasi deploy
+├── app/
+│   ├── index.php          Home (statistik + leaderboard dari database)
+│   ├── reset.php          Kosongkan data (POST + CSRF)
+│   ├── includes/          config, koneksi, session, header, footer, auth, csrf, helpers, games
+│   ├── assets/css, js     tema Volt Lobby + interaksi
+│   ├── tim/               CRUD tim, riwayat MMR
+│   ├── pertandingan/      list, buat, hapus, submit skor
+│   └── auth/              register, login, logout
+├── sql/                   skema 01-03 (jalankan berurutan), 04 opsional (sessions)
 └── docs/                  wireframe, security-checklist, manual-pengguna
 ```
 
