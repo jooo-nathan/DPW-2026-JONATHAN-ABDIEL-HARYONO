@@ -1,5 +1,5 @@
 <?php
-$page_title = "Daftarkan Tim";
+$page_title = "Team Register";
 $menu_aktif = 'daftar';
 include __DIR__ . '/../includes/header.php';
 ?>
@@ -11,6 +11,10 @@ include __DIR__ . '/../includes/header.php';
             <?php endif; ?>
 
             <form method="post" action="proses_tambah.php">
+                <p>
+                    <label for="nickname">Nickname (maks 3 karakter)</label>
+                    <input type="text" id="nickname" name="nickname" maxlength="3" required>
+                </p>
                 <p>
                     <label for="nama_tim">Nama Tim (3-30 karakter)</label>
                     <input type="text" id="nama_tim" name="nama_tim" maxlength="30" required>

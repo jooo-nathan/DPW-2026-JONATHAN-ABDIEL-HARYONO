@@ -205,6 +205,13 @@ section h2 {
     border-color: var(--merah);
 }
 
+.btn-bahaya:hover {
+    background-color: #EF4444;
+    color: var(--merah);
+    border-color: var(--merah);
+    
+}
+
 .btn-kecil {
     padding: 0.35rem 0.9rem;
     font-size: 0.9rem;

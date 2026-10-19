@@ -8,7 +8,9 @@ DROP TABLE IF EXISTS tim;
 -- Tabel tim: nama_tim tidak boleh sama (UNIQUE)
 CREATE TABLE tim (
     id       SERIAL PRIMARY KEY,
-    nama_tim VARCHAR(30) NOT NULL UNIQUE,
+    nickname VARCHAR(3) NOT NULL UNIQUE
+    nama_tim VARCHAR(30) NOT NULL,
+    julah_anggota INT,
     game     VARCHAR(30) NOT NULL,
     mmr      INT NOT NULL DEFAULT 1000
 );

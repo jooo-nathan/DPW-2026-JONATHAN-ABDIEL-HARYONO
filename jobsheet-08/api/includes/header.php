@@ -32,7 +32,7 @@ $menu_aktif = $menu_aktif ?? '';
                 <li><a href="<?php echo $base; ?>pertandingan/list.php" <?php echo $menu_aktif === 'hub' ? 'class="aktif"' : ''; ?>>Matchmaking Hub</a></li>
                 <li><a href="<?php echo $base; ?>pertandingan/tambah.php" <?php echo $menu_aktif === 'buat' ? 'class="aktif"' : ''; ?>>Create Match</a></li>
                 <li><a href="<?php echo $base; ?>index.php#leaderboard">Leaderboard</a></li>
-                <li><a href="<?php echo $base; ?>tim/tambah.php" <?php echo $menu_aktif === 'daftar' ? 'class="aktif"' : ''; ?>>Daftarkan Tim</a></li>
+                <li><a href="<?php echo $base; ?>tim/tambah.php" <?php echo $menu_aktif === 'daftar' ? 'class="aktif"' : ''; ?>>Register Your Team</a></li>
             </ul>
         </nav>
     </header>

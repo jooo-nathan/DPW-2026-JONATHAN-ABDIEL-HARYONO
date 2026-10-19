@@ -2,10 +2,14 @@
 require __DIR__ . '/../includes/koneksi.php';
 require __DIR__ . '/../includes/games.php';
 
-$namaTim = trim($_POST['nama_tim'] ?? '');
-$game    = trim($_POST['game'] ?? '');
+$nickname = trim($_POST['nickname' ?? '']);
+$namaTim  = trim($_POST['nama_tim'] ?? '');
+$game     = trim($_POST['game'] ?? '');
 
 // Validasi di sisi server
+if (!preg_match('^[A-Z0-9]{1,3}$/', $nickname)) {
+    
+}
 if (strlen($namaTim) < 3 || strlen($namaTim) > 30) {
     header('Location: tambah.php?tipe=error&pesan=' . urlencode('Nama tim harus 3-30 karakter.'));
     exit;

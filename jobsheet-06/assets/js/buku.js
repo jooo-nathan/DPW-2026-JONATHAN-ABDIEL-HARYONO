@@ -71,15 +71,15 @@ document.addEventListener("DOMContentLoaded", function () {
 // tiap pemuatan, tapi ini pemborosan. Perbaikan: hapus salah satu blok.
 
 // Halaman Daftar Buku — tinggal panggil fungsi generik dari app.js
-document.addEventListener("DOMContentLoaded", function () {
-    const daftarKolomBuku = ["judul", "pengarang", "tahun", "stok", "kategori"];
+// document.addEventListener("DOMContentLoaded", function () {
+//     const daftarKolomBuku = ["judul", "pengarang", "tahun", "stok", "kategori"];
 
-    muatDaftarData("buku.json", daftarKolomBuku);
+//     muatDaftarData("buku.json", daftarKolomBuku);
 
-    const btnMuatUlang = document.getElementById("btn-muat-ulang");
-    if (btnMuatUlang) {
-        btnMuatUlang.addEventListener("click", function () {
-            muatDaftarData("buku.json", daftarKolomBuku);
-        });
-    }
-});
+//     const btnMuatUlang = document.getElementById("btn-muat-ulang");
+//     if (btnMuatUlang) {
+//         btnMuatUlang.addEventListener("click", function () {
+//             muatDaftarData("buku.json", daftarKolomBuku);
+//         });
+//     }
+// });
