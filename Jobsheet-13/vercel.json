@@ -6,8 +6,12 @@
   },
   "routes": [
     {
-      "src": "/assets/(.*)",
-      "dest": "/api/assets/$1"
+      "src": "/assets/css/(.*)",
+      "dest": "/api/assets/css/$1"
+    },
+    {
+      "src": "/assets/js/(.*)",
+      "dest": "/api/assets/js/$1"
     },
     {
       "handle": "filesystem"
